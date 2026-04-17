@@ -741,15 +741,56 @@ function syncSettings() {
 // Initial sync
 syncSettings();
 
+/* ─── FEATURE 9: PARTS SHOP CHECKOUT FLOW ──────────────────── */
 function checkoutCart() {
   if (cart.length === 0) { showToast('Your cart is empty!', 'error'); return; }
-  showToast('Redirecting to checkout... (Demo)', 'success');
-  setTimeout(() => {
-    cart = [];
-    saveCart();
-    updateCartUI();
-    document.getElementById('cart-sidebar').classList.remove('open');
-  }, 2000);
+  document.getElementById('cart-sidebar').classList.remove('open');
+  const modal = document.getElementById('checkout-modal');
+  if (!modal) return;
+  // Populate order summary
+  const total = cart.reduce((sum, c) => sum + c.price * (c.qty || 1), 0);
+  document.getElementById('checkout-items-list').innerHTML = cart.map(c =>
+    `<div class="co-item"><span>${c.name} ${c.qty > 1 ? 'x' + c.qty : ''}</span><span>₹${(c.price * c.qty).toLocaleString('en-IN')}</span></div>`
+  ).join('');
+  document.getElementById('checkout-total-amt').textContent = '₹' + total.toLocaleString('en-IN');
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout() {
+  const modal = document.getElementById('checkout-modal');
+  if (modal) modal.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function placeOrder() {
+  const name = document.getElementById('co-name').value.trim();
+  const phone = document.getElementById('co-phone').value.trim();
+  const address = document.getElementById('co-address').value.trim();
+  const pincode = document.getElementById('co-pincode').value.trim();
+  if (!name || !phone || !address || !pincode) {
+    showToast('Please fill in all delivery details.', 'error'); return;
+  }
+  const orderId = 'ORD-' + Date.now().toString().slice(-8);
+  const total = cart.reduce((sum, c) => sum + c.price * (c.qty || 1), 0);
+  const order = {
+    orderId, name, phone, address, pincode,
+    items: [...cart], total,
+    payment: document.getElementById('co-payment').value,
+    timestamp: new Date().toISOString()
+  };
+  const orders = JSON.parse(localStorage.getItem('aeOrders') || '[]');
+  orders.push(order);
+  localStorage.setItem('aeOrders', JSON.stringify(orders));
+
+  // Clear cart
+  cart = []; saveCart(); updateCartUI();
+
+  // Show confirmation
+  document.getElementById('checkout-form-wrap').classList.add('hidden');
+  document.getElementById('checkout-success').classList.remove('hidden');
+  document.getElementById('order-id-display').textContent = orderId;
+  showToast('Order placed successfully! 🎉', 'success');
 }
 
 // Init repairs with demo data if empty
@@ -1116,3 +1157,205 @@ function calcEstimate() {
   const et = document.getElementById('est-type');
   if (et) calcEstimate();
 })();
+
+/* ─── FEATURE 4: LEAVE A REVIEW / STAR RATING ────────────────── */
+let selectedRating = 0;
+
+function setRating(star) {
+  selectedRating = star;
+  document.querySelectorAll('.star-btn').forEach((s, i) => {
+    s.classList.toggle('active', i < star);
+  });
+}
+
+function submitReview() {
+  const name = document.getElementById('review-name').value.trim();
+  const car  = document.getElementById('review-car').value.trim();
+  const text = document.getElementById('review-text').value.trim();
+  if (!name || !text || selectedRating === 0) {
+    showToast('Please fill name, rating and comment.', 'error'); return;
+  }
+  const review = {
+    name, car, text, rating: selectedRating,
+    initials: name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2),
+    date: new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }),
+    timestamp: Date.now()
+  };
+  const reviews = JSON.parse(localStorage.getItem('aeReviews') || '[]');
+  reviews.unshift(review);
+  localStorage.setItem('aeReviews', JSON.stringify(reviews));
+
+  // Reset form
+  document.getElementById('review-name').value = '';
+  document.getElementById('review-car').value = '';
+  document.getElementById('review-text').value = '';
+  selectedRating = 0;
+  document.querySelectorAll('.star-btn').forEach(s => s.classList.remove('active'));
+
+  renderUserReviews();
+  showToast('Thank you for your review! ⭐', 'success');
+}
+
+function renderUserReviews() {
+  const container = document.getElementById('user-reviews-list');
+  if (!container) return;
+  const reviews = JSON.parse(localStorage.getItem('aeReviews') || '[]');
+  if (reviews.length === 0) {
+    container.innerHTML = '<p style="color:var(--grey-3);text-align:center;padding:2rem">No reviews yet — be the first! 🌟</p>';
+    return;
+  }
+  container.innerHTML = reviews.slice(0, 9).map(r => `
+    <div class="user-review-card">
+      <div class="ur-header">
+        <div class="ur-avatar">${r.initials}</div>
+        <div>
+          <div class="ur-name">${r.name}</div>
+          <div class="ur-car">${r.car || 'AutoElite Customer'}</div>
+        </div>
+        <div class="ur-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+      </div>
+      <p class="ur-text">"${r.text}"</p>
+      <div class="ur-date">${r.date}</div>
+    </div>
+  `).join('');
+}
+
+// Init reviews on load
+document.addEventListener('DOMContentLoaded', renderUserReviews);
+
+/* ─── FEATURE 5: VEHICLE HISTORY CHECKER ─────────────────────── */
+function checkVehicleHistory() {
+  const reg = (document.getElementById('history-input').value || '').trim().toUpperCase();
+  const name = (document.getElementById('history-name').value || '').trim();
+  if (!reg && !name) { showToast('Enter Reg Number or your Name.', 'error'); return; }
+
+  const bookings = JSON.parse(localStorage.getItem('aeBookings') || '[]');
+  const repairs  = JSON.parse(localStorage.getItem('aeRepairs')  || '[]');
+
+  let results = [];
+  if (reg)  results = [...bookings.filter(b => b.vehicle && b.vehicle.toUpperCase().includes(reg)),
+                        ...repairs.filter(r => r.reg && r.reg.toUpperCase().includes(reg))];
+  if (name) results = [...results, ...bookings.filter(b => b.name && b.name.toLowerCase().includes(name.toLowerCase()))];
+
+  // dedupe
+  results = [...new Map(results.map(r => [r.ref || r.id, r])).values()];
+
+  const container = document.getElementById('history-result');
+  if (results.length === 0) {
+    container.innerHTML = '<p style="color:var(--grey-3);text-align:center;padding:2rem">No service history found. Book your first service above!</p>';
+  } else {
+    container.innerHTML = results.map(r => `
+      <div class="history-card">
+        <div class="hc-top">
+          <span class="hc-ref">${r.ref || r.id}</span>
+          <span class="hc-status status-${r.paid ? 'received' : 'inprogress'}">${r.paid ? '✅ Confirmed' : '⏳ Pending'}</span>
+        </div>
+        <div class="hc-vehicle">🚗 ${r.vehicle} ${r.reg ? '· ' + r.reg : ''}</div>
+        <div class="hc-service">🔧 ${r.service || r.desc || 'Service'}</div>
+        <div class="hc-date">📅 ${r.date || 'Booked'} ${r.time ? '@ ' + r.time : ''}</div>
+        <div class="hc-amount">💰 Total: ₹${(r.totalPrice || r.price || 0).toLocaleString('en-IN')}</div>
+      </div>
+    `).join('');
+  }
+  container.classList.remove('hidden');
+}
+
+/* ─── FEATURE 6: LIVE CHAT WIDGET ─────────────────────────────── */
+(function initChat() {
+  const autoReplies = [
+    { keys: ['hello', 'hi', 'hey', 'namaste'], reply: "Hello! 👋 Welcome to AutoElite. How can I help you today? You can ask about services, pricing, or book an appointment!" },
+    { keys: ['book', 'appointment', 'schedule'], reply: "📅 To book a service, scroll up and click **Book Now** in the menu, or <a href='#booking' onclick='toggleChat()'>click here</a>. We confirm within 5 minutes!" },
+    { keys: ['price', 'cost', 'charge', 'rate', 'fee'], reply: "💰 Use our **Cost Estimator** to get instant quotes! <a href='#estimator' onclick='toggleChat()'>Click here →</a>. Prices start from ₹400 for tyre service and ₹800 for oil change." },
+    { keys: ['track', 'status', 'repair', 'update'], reply: "🔍 Track your vehicle status instantly! Go to **Track Repair** section or enter your Booking Ref / Reg Number." },
+    { keys: ['emergency', 'breakdown', 'road', 'stuck'], reply: "🚨 Emergency? Call us NOW: <strong>+91 95105 16503</strong>. We reach you within 45 minutes, 24/7!" },
+    { keys: ['ac', 'air', 'cool', 'cooling'], reply: "❄️ AC issues? We handle gas recharge, compressor repair, and cabin filter replacement. First AC pressure test is FREE! Book at ₹1,200 onwards." },
+    { keys: ['oil', 'engine', 'service'], reply: "⚙️ Oil change starts from ₹800. Full service from ₹2,500. We use OEM-grade synthetic and semi-synthetic oils from Shell, Castrol & Mobil 1." },
+    { keys: ['tyre', 'tire', 'puncture', 'flat', 'wheel'], reply: "🛞 Tyre services start at ₹400. We offer fitting, 3D alignment, balancing, and puncture repair for all brands. Same-day service available!" },
+    { keys: ['brake'], reply: "🛑 Brake pad replacement from ₹1,800. Safety is our priority — all brake work comes with a 6-month warranty!" },
+    { keys: ['warranty', 'guarantee'], reply: "🛡️ All our repairs come with a **6-month / 10,000 km warranty** on parts and labour. No questions asked." },
+    { keys: ['time', 'hour', 'open', 'timing'], reply: "🕐 We're open Mon–Fri 8AM–7PM, Sat 8AM–6PM, Sun 10AM–4PM. Emergency service is available 24/7!" },
+    { keys: ['location', 'address', 'where', 'map'], reply: "📍 AutoElite Garage Complex, Plot No. 15, Industrial Area Phase 2, Near Highway Flyover, City – 400001. <a href='https://maps.google.com' target='_blank'>Open in Maps →</a>" },
+    { keys: ['whatsapp', 'wa', 'chat'], reply: "💬 Chat with us on WhatsApp: <a href='https://wa.me/919510516503' target='_blank'>+91 95105 16503</a>. Typical response in under 5 minutes!" },
+    { keys: ['thanks', 'thank', 'great', 'good'], reply: "😊 You're welcome! Is there anything else I can help you with? You can also call us at +91 95105 16503." },
+  ];
+
+  window.toggleChat = function() {
+    const win = document.getElementById('chat-window');
+    const bubble = document.getElementById('chat-bubble');
+    if (!win) return;
+    const isOpen = win.classList.toggle('open');
+    bubble.classList.toggle('pulsing', !isOpen);
+    if (isOpen && document.getElementById('chat-messages').children.length === 0) {
+      addBotMsg("👋 Hi there! I'm AutoBot, AutoElite's virtual assistant. How can I help you today?", 600);
+      addBotMsg("You can ask me about <strong>services, pricing, booking, tracking</strong> or anything car-related!", 1400);
+    }
+  };
+
+  window.sendChat = function() {
+    const input = document.getElementById('chat-input');
+    const msg = input.value.trim();
+    if (!msg) return;
+    addUserMsg(msg);
+    input.value = '';
+    const lower = msg.toLowerCase();
+    const match = autoReplies.find(ar => ar.keys.some(k => lower.includes(k)));
+    setTimeout(() => {
+      addBotMsg(match ? match.reply : "🤔 I'm not sure about that, but our team knows! Call us at <strong>+91 95105 16503</strong> or WhatsApp us. We typically respond in 5 minutes during business hours.");
+    }, 700);
+  };
+
+  window.handleChatKey = function(e) {
+    if (e.key === 'Enter') sendChat();
+  };
+
+  function addUserMsg(text) {
+    const msgs = document.getElementById('chat-messages');
+    msgs.innerHTML += `<div class="chat-msg user-msg">${text}</div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function addBotMsg(html, delay = 0) {
+    const msgs = document.getElementById('chat-messages');
+    setTimeout(() => {
+      msgs.innerHTML += `<div class="chat-msg bot-msg"><span class="bot-dot"></span>${html}</div>`;
+      msgs.scrollTop = msgs.scrollHeight;
+    }, delay);
+  }
+})();
+
+/* ─── FEATURE 7: PRINTABLE INVOICE / RECEIPT ─────────────────── */
+function printReceipt() {
+  const booking = JSON.parse(localStorage.getItem('aeBookings') || '[]').slice(-1)[0];
+  const printArea = document.getElementById('print-receipt');
+  if (!printArea) return;
+  if (booking) {
+    printArea.innerHTML = `
+      <div class="print-header">
+        <h1>AutoElite Garage</h1>
+        <p>Plot No. 15, Industrial Area Phase 2, City – 400001</p>
+        <p>Phone: +91 95105 16503 | hello@autoelitegarage.com</p>
+        <hr/>
+        <h2>SERVICE RECEIPT</h2>
+      </div>
+      <table class="print-table">
+        <tr><td>Booking Ref</td><td><strong>${booking.ref}</strong></td></tr>
+        <tr><td>Payment ID</td><td>${booking.paymentId || '—'}</td></tr>
+        <tr><td>Customer Name</td><td>${booking.name}</td></tr>
+        <tr><td>Phone</td><td>${booking.phone}</td></tr>
+        <tr><td>Vehicle</td><td>${booking.vehicle}</td></tr>
+        <tr><td>Registration</td><td>${booking.reg || '—'}</td></tr>
+        <tr><td>Service Date</td><td>${booking.date} at ${booking.time}</td></tr>
+        <tr><td>Services</td><td>${booking.service}</td></tr>
+        <tr><td>Total Estimate</td><td>₹${(booking.totalPrice || 0).toLocaleString('en-IN')}</td></tr>
+        <tr><td>Advance Paid (30%)</td><td><strong>₹${(booking.advancePaid || 0).toLocaleString('en-IN')}</strong></td></tr>
+        <tr><td>Balance Due</td><td>₹${((booking.totalPrice || 0) - (booking.advancePaid || 0)).toLocaleString('en-IN')}</td></tr>
+      </table>
+      <p style="margin-top:1.5rem">All repairs are covered by a <strong>6-month / 10,000 km warranty</strong>.</p>
+      <p>Thank you for choosing AutoElite Garage! 🏎️</p>
+      <p style="margin-top:1rem;font-size:0.8rem;color:#666">Generated: ${new Date().toLocaleString('en-IN')}</p>
+    `;
+  } else {
+    printArea.innerHTML = '<p>No booking found to print.</p>';
+  }
+  window.print();
+}

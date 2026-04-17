@@ -130,6 +130,8 @@
             <li><a href="#gallery" class="nav-link">Gallery</a></li>
             <li><a href="#blog" class="nav-link">Car Tips</a></li>
             <li><a href="#testimonials" class="nav-link">Reviews</a></li>
+            <li><a href="#write-review" class="nav-link">⭐ Write Review</a></li>
+            <li><a href="#vehicle-history" class="nav-link">🔍 Vehicle History</a></li>
             <li><a href="#faq" class="nav-link">FAQ</a></li>
             <li><a href="#estimator" class="nav-link">💰 Cost Estimator</a></li>
             <li><a href="#emergency" class="nav-link">Emergency</a></li>
@@ -689,7 +691,10 @@
             <p>Your appointment and advance payment have been received. You'll receive a confirmation call/SMS shortly.</p>
             <p class="booking-ref">Booking Ref: <strong id="booking-ref-num"></strong></p>
             <div class="payment-receipt">Receipt ID: <span id="payment-id">PAY-827391</span></div>
-            <a href="#tracking" class="btn-outline" style="margin-top:1.5rem">Track Your Repair</a>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;justify-content:center">
+              <a href="#tracking" class="btn-outline">Track Your Repair</a>
+              <button class="btn-primary" onclick="printReceipt()">🖨️ Print Receipt</button>
+            </div>
           </div>
         </div>
 
@@ -1462,9 +1467,159 @@
   <div class="floating-actions">
     <a href="https://wa.me/919510516503" class="float-btn whatsapp" target="_blank" title="WhatsApp Us">💬</a>
     <a href="tel:+919510516503" class="float-btn call" title="Call Us">📞</a>
+    <!-- FEATURE 6: Chat Bubble -->
+    <button class="float-btn chat" id="chat-bubble" onclick="toggleChat()" title="Live Chat" style="background:linear-gradient(135deg,#FF6B00,#ff9500)">🤖</button>
     <button class="float-btn top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+  </div>
+
+  <!-- FEATURE 6: LIVE CHAT WINDOW -->
+  <div class="chat-window" id="chat-window">
+    <div class="chat-header">
+      <div class="chat-bot-info">
+        <div class="chat-bot-avatar">🤖</div>
+        <div>
+          <div class="chat-bot-name">AutoBot</div>
+          <div class="chat-bot-status">● Online – Typically replies instantly</div>
+        </div>
+      </div>
+      <button class="chat-close" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Ask me anything..." onkeydown="handleChatKey(event)" />
+      <button class="chat-send-btn" onclick="sendChat()">➤</button>
+    </div>
+  </div>
+
+  <!-- FEATURE 4: LEAVE A REVIEW SECTION -->
+  <section id="write-review" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Share Your Experience</span>
+        <h2 class="section-title">Leave a <span class="accent">Review</span></h2>
+        <p class="section-subtitle">Your feedback helps us improve and helps others choose great service.</p>
+      </div>
+      <div class="review-layout">
+        <div class="review-form-wrap reveal-left">
+          <div class="review-form">
+            <div class="star-rating-input">
+              <p>Your Rating *</p>
+              <div class="stars-row">
+                <button class="star-btn" onclick="setRating(1)">★</button>
+                <button class="star-btn" onclick="setRating(2)">★</button>
+                <button class="star-btn" onclick="setRating(3)">★</button>
+                <button class="star-btn" onclick="setRating(4)">★</button>
+                <button class="star-btn" onclick="setRating(5)">★</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="review-name">Your Name *</label>
+                <input type="text" id="review-name" placeholder="Rahul Sharma" />
+              </div>
+              <div class="form-group">
+                <label for="review-car">Your Car</label>
+                <input type="text" id="review-car" placeholder="e.g. Honda City 2022" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="review-text">Your Review *</label>
+              <textarea id="review-text" rows="4" placeholder="Tell us about your experience at AutoElite..."></textarea>
+            </div>
+            <button class="btn-primary btn-full" onclick="submitReview()">⭐ Submit Review</button>
+          </div>
+        </div>
+        <div class="user-reviews-wrap reveal-right">
+          <h3 style="margin-bottom:1.5rem">Recent Customer Reviews</h3>
+          <div id="user-reviews-list" class="user-reviews-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE 5: VEHICLE HISTORY CHECKER (inside tracking, added as separate section) -->
+  <section id="vehicle-history" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Complete Service Log</span>
+        <h2 class="section-title">Vehicle <span class="accent">History</span> Checker</h2>
+        <p class="section-subtitle">Enter your registration number or name to view your complete service history with AutoElite.</p>
+      </div>
+      <div class="history-search reveal">
+        <div class="history-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="history-input">Registration / Vehicle</label>
+              <input type="text" id="history-input" placeholder="e.g. MH 01 AB 1234 or Honda City" />
+            </div>
+            <div class="form-group">
+              <label for="history-name">Or Your Name</label>
+              <input type="text" id="history-name" placeholder="e.g. Rahul Sharma" />
+            </div>
+          </div>
+          <button class="btn-primary" onclick="checkVehicleHistory()">🔍 Search History</button>
+        </div>
+        <div id="history-result" class="history-result hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE 7: PRINT RECEIPT AREA (hidden, only visible on print) -->
+  <div id="print-receipt" style="display:none"></div>
+
+  <!-- FEATURE 9: PARTS SHOP CHECKOUT MODAL -->
+  <div class="checkout-modal" id="checkout-modal">
+    <div class="checkout-modal-inner">
+      <button class="checkout-close" onclick="closeCheckout()">✕</button>
+      <div id="checkout-form-wrap">
+        <h3>🛒 Complete Your Order</h3>
+        <div class="co-summary">
+          <div id="checkout-items-list"></div>
+          <div class="co-total"><span>Order Total:</span> <strong id="checkout-total-amt">₹0</strong></div>
+        </div>
+        <div class="form-row" style="margin-top:1.5rem">
+          <div class="form-group">
+            <label for="co-name">Full Name *</label>
+            <input type="text" id="co-name" placeholder="Your name" />
+          </div>
+          <div class="form-group">
+            <label for="co-phone">Phone *</label>
+            <input type="tel" id="co-phone" placeholder="+91 XXXXX XXXXX" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="co-address">Delivery Address *</label>
+          <textarea id="co-address" rows="2" placeholder="Full address for parts delivery"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="co-pincode">Pincode *</label>
+            <input type="text" id="co-pincode" placeholder="400001" />
+          </div>
+          <div class="form-group">
+            <label for="co-payment">Payment Method</label>
+            <select id="co-payment">
+              <option value="cod">💵 Cash on Delivery</option>
+              <option value="upi">📱 UPI / QR Code</option>
+              <option value="card">💳 Card (Pay on Delivery)</option>
+            </select>
+          </div>
+        </div>
+        <p style="font-size:0.75rem;color:var(--grey-3);margin-bottom:1.5rem">Note: Parts delivery within 2–3 business days. Installation available at our garage.</p>
+        <button class="btn-primary btn-full" onclick="placeOrder()">✅ Place Order</button>
+        <button class="btn-outline btn-full" style="margin-top:0.75rem" onclick="closeCheckout()">Cancel</button>
+      </div>
+      <div id="checkout-success" class="booking-success hidden">
+        <div class="success-animation">🎉</div>
+        <h3>Order Placed Successfully!</h3>
+        <p>Your order ID: <strong id="order-id-display"></strong></p>
+        <p>We'll contact you within 2 hours to confirm delivery details. Parts will arrive in 2–3 business days.</p>
+        <button class="btn-outline" style="margin-top:1rem" onclick="closeCheckout()">Continue Shopping</button>
+      </div>
+    </div>
   </div>
 
   <script src="js/main.js"></script>
 </body>
 </html>
+
