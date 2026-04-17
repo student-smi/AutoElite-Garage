@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoElite | Admin Dashboard</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --admin-bg: #0A0A0F;
+            --admin-card: #16161F;
+            --admin-accent: #FF6B00;
+        }
+
+        body {
+            background: var(--admin-bg);
+            padding-top: 0;
+        }
+
+        .admin-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: var(--admin-card);
+            border-right: 1px solid var(--dark-border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 100;
+        }
+
+        .admin-main {
+            margin-left: 280px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--white);
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-link {
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            color: var(--grey-2);
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--glass);
+            color: var(--white);
+        }
+
+        .sidebar-link.active {
+            color: var(--admin-accent);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-card {
+            background: var(--admin-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-pill {
+            padding: 0.35rem 0.85rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-received {
+            background: rgba(0, 200, 122, 0.1);
+            color: #00C87A;
+        }
+
+        .status-inprogress {
+            background: rgba(255, 107, 0, 0.1);
+            color: #FF6B00;
+        }
+
+        .status-ready {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498DB;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem;
+            color: var(--grey-2);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid var(--dark-border);
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            border-radius: 8px;
+        }
+
+        .update-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .update-modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--admin-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--admin-card);
+            border: 1px solid var(--dark-border);
+            padding: 1.5rem;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--admin-accent);
+        }
+
+        .stat-card .val {
+            font-size: 1.75rem;
+            font-weight: 700;
+            font-family: 'Rajdhani';
+            margin: 0.5rem 0;
+        }
+
+        .stat-card .lab {
+            font-size: 0.8rem;
+            color: var(--grey-2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--grey-2);
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            background: var(--dark-3);
+            border: 1px solid var(--dark-border);
+            border-radius: 12px;
+            padding: 0.75rem;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--admin-accent);
+            outline: none;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-sidebar">
+        <div class="sidebar-logo">
+            <svg width="24" height="24" viewBox="0 0 100 100">
+                <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#FF6B00"
+                    stroke-width="8" />
+            </svg>
+            Auto<span>Elite</span>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-link active" onclick="switchTab('dashboard', this)">📊 Dashboard</div>
+            <div class="sidebar-link" onclick="switchTab('repairs', this)">🔧 Active Repairs</div>
+            <div class="sidebar-link" onclick="switchTab('bookings', this)">📅 New Bookings</div>
+            <div class="sidebar-link" onclick="switchTab('inventory', this)">📦 Inventory</div>
+            <div class="sidebar-link" onclick="switchTab('settings', this)">⚙️ Settings</div>
+            <div class="sidebar-link" onclick="window.location.href='index.html'">🏠 View Site</div>
+        </nav>
+        <div style="margin-top: auto;">
+            <div class="sidebar-link" style="color: #FF4444;">🚪 Logout</div>
+        </div>
+    </div>
+
+    <main class="admin-main">
+        <!-- DASHBOARD TAB -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="dashboard-header">
+                <div>
+                    <h1 class="section-title" style="margin-bottom:0.25rem">Owner Dash<span class="accent">board</span>
+                    </h1>
+                    <p class="section-subtitle" style="margin:0; text-align:left">Real-time workshop performance and
+                        shop status.</p>
+                </div>
+                <button class="btn-primary" onclick="openUpdateModal()">+ Add New Repair</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="lab">Total Revenue (Month)</div>
+                    <div class="val">₹4,82,500</div>
+                    <div style="color:var(--success); font-size:0.75rem">↑ 12.5% from last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="lab">Active Repairs</div>
+                    <div class="val" id="stat-active">0</div>
+                    <div style="color:var(--admin-accent); font-size:0.75rem">Workshop at 85% capacity</div>
+                </div>
+                <div class="stat-card">
+                    <div class="lab">Pending Bookings</div>
+                    <div class="val" id="stat-pending">0</div>
+                    <div style="color:var(--admin-accent); font-size:0.75rem">Next available slot: Tomorrow</div>
+                </div>
+                <div class="stat-card">
+                    <div class="lab">Customer Rating</div>
+                    <div class="val">4.9/5</div>
+                    <div style="color:var(--success); font-size:0.75rem">Based on 1,250 reviews</div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h3>Live Activity</h3>
+                <div id="activity-log" style="margin-top:1rem; font-size:0.85rem; color:var(--grey-2)">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- REPAIRS TAB -->
+        <div id="tab-repairs" class="tab-content">
+            <div class="dashboard-header" style="margin-top:2rem">
+                <h3 class="section-title">Active <span class="accent">Today</span></h3>
+            </div>
+            <div class="admin-card">
+                <table id="repairs-table-today">
+                    <thead>
+                        <tr>
+                            <th>Ref/Date</th>
+                            <th>Vehicle</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Invoice</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody><!-- Populated by JS --></tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-header" style="margin-top:3rem">
+                <h3 class="section-title">Upcoming <span class="accent">Schedule</span></h3>
+            </div>
+            <div class="admin-card">
+                <table id="repairs-table-future">
+                    <thead>
+                        <tr>
+                            <th>Ref/Date</th>
+                            <th>Vehicle</th>
+                            <th>Owner</th>
+                            <th>Status/Info</th>
+                            <th>Progress</th>
+                            <th>Invoice</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody><!-- Populated by JS --></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- BOOKINGS TAB -->
+        <div id="tab-bookings" class="tab-content">
+            <div class="dashboard-header">
+                <h2 class="section-title">New <span class="accent">Bookings</span></h2>
+            </div>
+            <div class="admin-card">
+                <table id="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Date/Time</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Service</th>
+                            <th>Payment</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INVENTORY TAB -->
+        <div id="tab-inventory" class="tab-content">
+            <div class="dashboard-header">
+                <h2 class="section-title">Stock <span class="accent">Management</span></h2>
+                <div style="display:flex; gap:1rem">
+                    <input type="text" id="inventory-search" placeholder="Search parts..." style="width:250px"
+                        oninput="renderInventory()">
+                    <button class="btn-primary"
+                        onclick="alert('Manual addition coming soon (Firebase required for scale)')">+ Add Item</button>
+                </div>
+            </div>
+            <div class="admin-card">
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Part ID</th>
+                            <th>Item Name</th>
+                            <th>Brand / Category</th>
+                            <th>Stock Level</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="tab-settings" class="tab-content">
+            <div class="dashboard-header">
+                <h2 class="section-title">Business <span class="accent">Settings</span></h2>
+            </div>
+            <div class="admin-card" style="max-width:800px">
+                <form id="settings-form">
+                    <h3 style="margin-bottom:1.5rem">Workshop Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Business Name</label>
+                            <input type="text" id="set-name" value="AutoElite Garage">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Phone</label>
+                            <input type="tel" id="set-phone" value="+91 95105 16503">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:1.5rem">
+                        <label>Business Address</label>
+                        <textarea id="set-address"
+                            rows="2">Plot No. 15, Industrial Area Phase 2, City – 400001</textarea>
+                    </div>
+
+                    <h3 style="margin-bottom:1.5rem; margin-top:2.5rem">Operating Hours</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mon – Fri</label>
+                            <input type="text" id="set-hours-week" value="8:00 AM – 7:00 PM">
+                        </div>
+                        <div class="form-group">
+                            <label>Saturday</label>
+                            <input type="text" id="set-hours-sat" value="8:00 AM – 6:00 PM">
+                        </div>
+                    </div>
+
+                    <h3 style="margin-bottom:1.5rem; margin-top:2.5rem">Service Pricing (₹)</h3>
+                    <p style="font-size:0.8rem; color:var(--grey-2); margin-bottom:1rem">Note: These prices will be
+                        shown to customers in the booking form.</p>
+                    <div id="service-price-inputs" class="stats-grid"
+                        style="grid-template-columns: 1fr 1fr; gap:1.5rem">
+                        <!-- Dynamic inputs from JS -->
+                    </div>
+
+                    <div style="margin-top:2.5rem">
+                        <button type="submit" class="btn-primary">Save Business & Pricing Settings</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- UPDATE MODAL -->
+    <div id="update-modal" class="update-modal">
+        <div class="modal-content">
+            <h3 id="modal-title" style="margin-bottom:1.5rem">Update Repair Status</h3>
+            <form id="repair-update-form">
+                <input type="hidden" id="edit-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Booking ID</label>
+                        <input type="text" id="edit-ref" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Reg Number</label>
+                        <input type="text" id="edit-reg" placeholder="MH 01 AB 1234">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Vehicle</label>
+                        <input type="text" id="edit-vehicle">
+                    </div>
+                    <div class="form-group">
+                        <label>Owner Name</label>
+                        <input type="text" id="edit-owner">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Scheduled Date</label>
+                        <input type="date" id="edit-date">
+                    </div>
+                    <div class="form-group">
+                        <!-- Spacer -->
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Current Status</label>
+                        <select id="edit-status">
+                            <option value="received">Vehicle Received</option>
+                            <option value="inspection">Initial Inspection</option>
+                            <option value="work">Work In Progress</option>
+                            <option value="qc">Quality Check</option>
+                            <option value="ready">Ready for Pickup</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Progress (%)</label>
+                        <input type="number" id="edit-progress" min="0" max="100">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem">
+                    <label>Work Description (Visible to user)</label>
+                    <textarea id="edit-desc" rows="3"></textarea>
+                </div>
+                <div class="form-group" style="margin-bottom:1.5rem">
+                    <label>Estimated Invoice (₹)</label>
+                    <input type="number" id="edit-price">
+                </div>
+                <div style="display:flex; gap:1rem; justify-content:flex-end">
+                    <button type="button" class="btn-outline" style="padding:0.75rem 1.5rem"
+                        onclick="closeUpdateModal()">Cancel</button>
+                    <button type="submit" class="btn-primary" style="padding:0.75rem 1.5rem">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data Management
+        function getRepairs() { return JSON.parse(localStorage.getItem('aeRepairs') || '[]'); }
+        function getBookings() { return JSON.parse(localStorage.getItem('aeBookings') || '[]'); }
+        function getInventory() { return JSON.parse(localStorage.getItem('aeInventory') || '[]'); }
+
+        // Demo Inventory if empty (Mirroring partsData from UI)
+        if (localStorage.getItem('aeInventory') === null) {
+            const initialInv = [
+                { id: 1, name: 'Engine Oil Filter', brand: 'Bosch', stock: 45, price: 380, category: 'engine' },
+                { id: 2, name: 'Timing Belt Kit', brand: 'Gates', stock: 12, price: 3200, category: 'engine' },
+                { id: 3, name: 'Iridium Spark Plugs', brand: 'NGK', stock: 24, price: 1800, category: 'engine' },
+                { id: 4, name: 'Synthetic Oil (4L)', brand: 'Castrol', stock: 8, price: 2600, category: 'engine' },
+                { id: 5, name: 'Front Brake Pad Set', brand: 'Brembo', stock: 15, price: 2400, category: 'brakes' },
+                { id: 8, name: 'Car Battery 45Ah', brand: 'Amaron', stock: 5, price: 4800, category: 'electrical' },
+                { id: 11, name: 'High-Flow Air Filter', brand: 'K&N', stock: 3, price: 1400, category: 'filters' }
+            ];
+            localStorage.setItem('aeInventory', JSON.stringify(initialInv));
+        }
+
+        // Demo data if empty
+        if (localStorage.getItem('aeRepairs') === null) {
+            const initialRepairs = [{
+                id: 'AE2024001',
+                reg: 'MH 01 AB 2024',
+                vehicle: 'Honda City 2022',
+                owner: 'Rohan Gupta',
+                status: 'work',
+                progress: 65,
+                desc: 'Engine oil change, air filter replacement, brake pad inspection.',
+                price: 4950,
+                updated: new Date().toISOString()
+            }];
+            localStorage.setItem('aeRepairs', JSON.stringify(initialRepairs));
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            btn.classList.add('active');
+            renderData();
+        }
+
+        function renderData() {
+            const repairs = getRepairs();
+            const bookings = getBookings();
+
+            // Stats
+            document.getElementById('stat-active').textContent = repairs.length;
+            document.getElementById('stat-pending').textContent = bookings.length;
+
+            // Update Revenue Stat
+            const totalRevenue = bookings.filter(b => b.paid).reduce((sum, b) => sum + (b.totalPrice || 0), 0) +
+                repairs.reduce((sum, r) => sum + (r.price || 0), 0);
+            document.querySelector('.stats-grid .stat-card .val').textContent = '₹' + totalRevenue.toLocaleString('en-IN');
+
+            renderRepairs();
+            renderBookings();
+            renderInventory();
+        }
+
+        function renderRepairs() {
+            const repairs = getRepairs();
+            const todayBody = document.querySelector('#repairs-table-today tbody');
+            const futureBody = document.querySelector('#repairs-table-future tbody');
+            if (!todayBody || !futureBody) return;
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            
+            // All repairs for today OR older go to Active list.
+            const todayRepairs = repairs.filter(r => !r.date || r.date <= todayStr);
+            // Only strictly future dates go to Upcoming list.
+            const futureRepairs = repairs.filter(r => r.date && r.date > todayStr);
+
+            const rowHtml = (r, isToday) => `
+                <tr>
+                    <td>
+                        <strong>${r.id}</strong><br>
+                        <span style="font-size:0.7rem; color:${isToday ? 'var(--orange)' : 'var(--grey-3)'}">${r.date || 'No Date'}</span>
+                    </td>
+                    <td>${r.vehicle}</td>
+                    <td>${r.owner}</td>
+                    <td><span class="status-pill status-${r.status}">${r.status}</span></td>
+                    <td>
+                        <div style="font-size:0.7rem; color:var(--grey-2); margin-bottom:4px">${r.progress}%</div>
+                        <div style="height:4px; background:var(--dark-3); border-radius:2px; overflow:hidden">
+                            <div style="width:${r.progress}%; height:100%; background:var(--admin-accent)"></div>
+                        </div>
+                    </td>
+                    <td>₹${(r.price || 0).toLocaleString('en-IN')}</td>
+                    <td>
+                        <div style="display:flex; gap:0.5rem">
+                            <button class="btn-sm btn-outline" onclick='openEdit("${r.id}")'>Edit</button>
+                            <button class="btn-sm" style="background:#25D366; color:white; border:none" title="Notify Customer" onclick='notifyWhatsApp("${r.phone || ''}", "Hi *${r.owner}*! 👋\n\nYour *${r.vehicle}* status is now: *${r.status.toUpperCase()}* (${r.progress}%).\n\n🔗 *Track Live:* ${window.location.origin}/index.html#tracking?ref=${r.id}\n\nAutoElite Garage 🏎️")'>💬</button>
+                            <button class="btn-sm" style="color:#FF4444" onclick='deleteRepair("${r.id}")'>✕</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+
+            todayBody.innerHTML = todayRepairs.length === 0 
+                ? '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--grey-3)">No active jobs for today.</td></tr>' 
+                : todayRepairs.map(r => rowHtml(r, true)).join('');
+
+            futureBody.innerHTML = futureRepairs.length === 0 
+                ? '<tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--grey-3)">No upcoming scheduled jobs.</td></tr>' 
+                : futureRepairs.map(r => rowHtml(r, false)).join('');
+        }
+
+        function renderBookings() {
+            const bookings = getBookings();
+            const bookingBody = document.querySelector('#bookings-table tbody');
+            if (!bookingBody) return;
+
+            if (bookings.length === 0) {
+                bookingBody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:3rem; color:var(--grey-2)">No new bookings yet.</td></tr>';
+                return;
+            }
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            
+            // Sort: Today first, then by date
+            const sorted = [...bookings].sort((a, b) => {
+                if (a.date === todayStr && b.date !== todayStr) return -1;
+                if (a.date !== todayStr && b.date === todayStr) return 1;
+                return new Date(a.date) - new Date(b.date);
+            });
+
+            bookingBody.innerHTML = sorted.map(b => {
+                const isToday = b.date === todayStr;
+                return `
+                    <tr style="${isToday ? 'background:rgba(255,107,0,0.05)' : ''}">
+                        <td>
+                            <div style="font-weight:bold; color:${isToday ? 'var(--orange)' : 'inherit'}">${isToday ? '🌞 TODAY' : b.date}</div>
+                            <div style="font-size:0.75rem">${b.time}</div>
+                        </td>
+                        <td><strong>${b.name}</strong></td>
+                        <td>${b.vehicle}</td>
+                        <td>${b.service}</td>
+                        <td style="color:${b.paid ? 'var(--success)' : '#FF4444'}">
+                            <strong>₹${(b.advancePaid || 0).toLocaleString('en-IN')}</strong><br>
+                            <span style="font-size:0.65rem">${b.paid ? '✅ ADVANCE PAID' : '⚠️ PENDING'}</span>
+                        </td>
+                        <td>
+                            <div style="display:flex; gap:0.5rem">
+                                <button class="btn-sm btn-primary" onclick='acceptBooking("${b.ref}")'>Accept</button>
+                                <button class="btn-sm" style="background:#25D366; color:white; border:none" title="Send Confirmation" onclick='notifyWhatsApp("${b.phone}", "Hi *${b.name}*! 👋\n\nYour booking for *${b.service}* has been received!\n\n📍 *Ref:* ${b.ref}\n🔗 *Track Live:* ${window.location.origin}/index.html#tracking?ref=${b.ref}\n\nWe will call you shortly to confirm the time. 🏎️")'>💬</button>
+                                <button class="btn-sm btn-outline" onclick='deleteBooking("${b.ref}")'>Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function notifyWhatsApp(phone, msg) {
+            if (!phone) { alert("No phone number found for this customer."); return; }
+            // Clean phone number (remove spaces, +, etc)
+            const cleanPhone = phone.replace(/\D/g, '');
+            const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        function renderInventory() {
+            const inventory = getInventory();
+            const table = document.querySelector('#inventory-table tbody');
+            const searchInput = document.getElementById('inventory-search');
+            const search = searchInput ? searchInput.value.toLowerCase() : '';
+            if (!table) return;
+
+            const filtered = inventory.filter(i =>
+                i.name.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search)
+            );
+
+            table.innerHTML = filtered.map(i => {
+                const isLow = i.stock < 10;
+                return `
+                    <tr>
+                        <td><span style="color:var(--grey-3); font-size:0.75rem">#${i.id}</span></td>
+                        <td><strong>${i.name}</strong></td>
+                        <td>${i.brand} / ${i.category}</td>
+                        <td style="color:${isLow ? '#FF4444' : 'inherit'}">
+                            <strong>${i.stock} units</strong>
+                            ${isLow ? '<br><span style="font-size:0.6rem; color:#FF4444">⚠️ LOW STOCK</span>' : ''}
+                        </td>
+                        <td>₹${i.price}</td>
+                        <td><span class="status-pill" style="background:${isLow ? 'rgba(255,68,68,0.1)' : 'rgba(0,200,122,0.1)'}; color:${isLow ? '#FF4444' : '#00C87A'}">${isLow ? 'Restock' : 'In Stock'}</span></td>
+                        <td>
+                            <button class="btn-sm btn-outline" onclick="updateStock(${i.id}, 1)">+</button>
+                            <button class="btn-sm btn-outline" onclick="updateStock(${i.id}, -1)">-</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStock(id, diff) {
+            const inventory = getInventory();
+            const item = inventory.find(i => i.id === id);
+            if (item) {
+                item.stock = Math.max(0, item.stock + diff);
+                localStorage.setItem('aeInventory', JSON.stringify(inventory));
+                renderInventory();
+            }
+        }
+
+        // Settings & Pricing Handling
+        const defaultPrices = {
+            'Engine Repair & Rebuild': 5000,
+            'Oil & Fluid Service': 800,
+            'Electrical & ECU Repair': 2000,
+            'Battery Service': 1500,
+            'AC Service & Repair': 1200,
+            'Denting & Painting': 3500,
+            'Tyre & Wheel Service': 400,
+            'Brake System Service': 1800,
+            'Scheduled Servicing': 2500,
+            'Car Detailing & Wash': 1500,
+            'Free Diagnostic Scan': 0,
+            'Other (describe below)': 500
+        };
+
+        function initSettings() {
+            const savedPrices = JSON.parse(localStorage.getItem('aeServicePrices') || JSON.stringify(defaultPrices));
+            const container = document.getElementById('service-price-inputs');
+            if (container) {
+                container.innerHTML = Object.keys(savedPrices).map(name => `
+                    <div class="form-group">
+                        <label>${name}</label>
+                        <input type="number" class="svc-price-input" data-name="${name}" value="${savedPrices[name]}">
+                    </div>
+                `).join('');
+            }
+
+            const config = JSON.parse(localStorage.getItem('aeSettings') || '{}');
+            if (config.name) document.getElementById('set-name').value = config.name;
+            if (config.phone) document.getElementById('set-phone').value = config.phone;
+            if (config.address) document.getElementById('set-address').value = config.address;
+            if (config.hoursWeek) document.getElementById('set-hours-week').value = config.hoursWeek;
+            if (config.hoursSat) document.getElementById('set-hours-sat').value = config.hoursSat;
+        }
+
+        document.getElementById('settings-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Save Business Config
+            const config = {
+                name: document.getElementById('set-name').value,
+                phone: document.getElementById('set-phone').value,
+                address: document.getElementById('set-address').value,
+                hoursWeek: document.getElementById('set-hours-week').value,
+                hoursSat: document.getElementById('set-hours-sat').value,
+            };
+            localStorage.setItem('aeSettings', JSON.stringify(config));
+
+            // Save Service Prices
+            const newPrices = {};
+            document.querySelectorAll('.svc-price-input').forEach(input => {
+                newPrices[input.getAttribute('data-name')] = parseInt(input.value) || 0;
+            });
+            localStorage.setItem('aeServicePrices', JSON.stringify(newPrices));
+
+            alert('Business & Pricing settings saved successfully!');
+        });
+
+        function openUpdateModal() {
+            document.getElementById('modal-title').textContent = "Add New Repair Job";
+            document.getElementById('edit-id').value = "";
+            document.getElementById('edit-ref').value = "AE" + Date.now().toString().slice(-7);
+            document.getElementById('edit-reg').value = "";
+            document.getElementById('edit-vehicle').value = "";
+            document.getElementById('edit-owner').value = "";
+            document.getElementById('edit-date').value = new Date().toISOString().split('T')[0];
+            document.getElementById('edit-status').value = "received";
+            document.getElementById('edit-progress').value = 0;
+            document.getElementById('edit-desc').value = "";
+            document.getElementById('edit-price').value = "";
+            document.getElementById('update-modal').classList.add('open');
+        }
+
+        function openEdit(id) {
+            const repairs = getRepairs();
+            const r = repairs.find(x => x.id === id);
+            if (!r) return;
+            document.getElementById('modal-title').textContent = "Update Repair Job";
+            document.getElementById('edit-id').value = r.id;
+            document.getElementById('edit-ref').value = r.id;
+            document.getElementById('edit-reg').value = r.reg;
+            document.getElementById('edit-vehicle').value = r.vehicle;
+            document.getElementById('edit-owner').value = r.owner || "";
+            document.getElementById('edit-date').value = r.date || "";
+            document.getElementById('edit-status').value = r.status || "received";
+            document.getElementById('edit-progress').value = r.progress || 0;
+            document.getElementById('edit-desc').value = r.desc || "";
+            document.getElementById('edit-price').value = r.price || "";
+            document.getElementById('update-modal').classList.add('open');
+        }
+
+        function closeUpdateModal() {
+            document.getElementById('update-modal').classList.remove('open');
+        }
+
+        document.getElementById('repair-update-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const repairs = getRepairs();
+            const id = document.getElementById('edit-id').value || document.getElementById('edit-ref').value;
+            const data = {
+                id: id,
+                reg: document.getElementById('edit-reg').value,
+                vehicle: document.getElementById('edit-vehicle').value,
+                owner: document.getElementById('edit-owner').value,
+                date: document.getElementById('edit-date').value,
+                status: document.getElementById('edit-status').value,
+                progress: parseInt(document.getElementById('edit-progress').value),
+                desc: document.getElementById('edit-desc').value,
+                price: parseInt(document.getElementById('edit-price').value),
+                updated: new Date().toISOString()
+            };
+
+            const index = repairs.findIndex(r => r.id === id);
+            if (index > -1) {
+                // Preserve phone if editing existing
+                data.phone = repairs[index].phone;
+                repairs[index] = data;
+            } else {
+                repairs.push(data);
+            }
+
+            localStorage.setItem('aeRepairs', JSON.stringify(repairs));
+            closeUpdateModal();
+            renderData();
+            alert('Status updated successfully!');
+        });
+
+        function deleteRepair(id) {
+            if (confirm('Delete this repair job?')) {
+                const repairs = getRepairs().filter(r => r.id !== id);
+                localStorage.setItem('aeRepairs', JSON.stringify(repairs));
+                renderData();
+            }
+        }
+
+        function acceptBooking(ref) {
+            const b = getBookings().find(x => x.ref === ref);
+            if (!b) return;
+            const repairs = getRepairs();
+            const newRepair = {
+                id: b.ref,
+                reg: "PENDING",
+                vehicle: b.vehicle,
+                owner: b.name,
+                phone: b.phone,
+                date: b.date, // Preserve the scheduled date
+                status: 'received',
+                progress: 10,
+                desc: 'Service confirmed: ' + b.service,
+                price: b.totalPrice || 0,
+                updated: new Date().toISOString()
+            };
+            repairs.push(newRepair);
+            const filteredBookings = getBookings().filter(x => x.ref !== ref);
+            localStorage.setItem('aeRepairs', JSON.stringify(repairs));
+            localStorage.setItem('aeBookings', JSON.stringify(filteredBookings));
+            renderData();
+            alert('Booking converted to active repair job.');
+        }
+
+        function deleteBooking(ref) {
+            if (confirm('Reject this booking?')) {
+                const filteredBookings = getBookings().filter(x => x.ref !== ref);
+                localStorage.setItem('aeBookings', JSON.stringify(filteredBookings));
+                renderData();
+            }
+        }
+
+        // Auto-refresh when localStorage changes (from site tab)
+        window.addEventListener('storage', () => {
+            renderData();
+        });
+
+        // Forced refresh every 2 seconds for "Real-time" feel in same window
+        setInterval(renderData, 2000);
+
+        initSettings();
+        renderData();
+
+    </script>
+</body>
+
+</html>

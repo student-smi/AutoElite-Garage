@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AutoElite Garage – Premium automotive repair, diagnostics, and maintenance. Book your appointment online, track your vehicle repair in real-time, and experience world-class service." />
+  <meta name="keywords" content="garage, auto repair, car service, vehicle diagnostics, brake repair, engine repair, oil change, tire service" />
+  <meta name="theme-color" content="#FF6B00" />
+  <meta property="og:title" content="AutoElite Garage | Premium Automotive Care" />
+  <meta property="og:description" content="State-of-the-art diagnostics, certified mechanics, and transparent pricing. Book online in 60 seconds." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/hero.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>" />
+  <title>AutoElite Garage | Premium Automotive Care</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <style>
+    .service-selection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+      max-height: 350px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      border: 1px solid var(--dark-border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .service-card {
+      background: var(--dark-3);
+      border: 1px solid var(--dark-border);
+      padding: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 0.5rem;
+      user-select: none;
+    }
+    .service-card:hover {
+      border-color: var(--orange);
+      background: rgba(255, 107, 0, 0.05);
+      transform: translateY(-2px);
+    }
+    .service-card.selected {
+      border-color: var(--orange);
+      background: var(--orange);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4);
+    }
+    .service-card .svc-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .service-card .svc-price {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+    .service-card.selected .svc-price {
+      opacity: 1;
+    }
+    .booking-price-tag {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 107, 0, 0.1);
+      border-radius: 8px;
+      border-left: 4px solid var(--orange);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PROMO ANNOUNCEMENT BAR -->
+  <div class="promo-bar" id="promo-bar">
+    <span>🎉 <strong>April Offer:</strong> Free AC Gas Recharge worth ₹1,200 with any Full Service booking this month!</span>
+    <button class="promo-close" onclick="document.getElementById('promo-bar').style.display='none'" aria-label="Close">✕</button>
+  </div>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="preloader-inner">
+      <div class="gear-wrap">
+        <svg class="gear" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M43.5,0 L56.5,0 L59,14.5 C63.5,15.8 67.7,17.8 71.4,20.5 L85,15.5 L94.5,25 L89.5,38.6 C92.2,42.3 94.2,46.5 95.5,51 L110,53.5 L110,66.5 L95.5,69 C94.2,73.5 92.2,77.7 89.5,81.4 L94.5,95 L85,104.5 L71.4,99.5 C67.7,102.2 63.5,104.2 59,105.5 L56.5,120 L43.5,120 L41,105.5 C36.5,104.2 32.3,102.2 28.6,99.5 L15,104.5 L5.5,95 L10.5,81.4 C7.8,77.7 5.8,73.5 4.5,69 L-10,66.5 L-10,53.5 L4.5,51 C5.8,46.5 7.8,42.3 10.5,38.6 L5.5,25 L15,15.5 L28.6,20.5 C32.3,17.8 36.5,15.8 41,14.5 Z M50,35 A15,15 0 1,0 50,65 A15,15 0 1,0 50,35 Z" fill="none" stroke="#FF6B00" stroke-width="4"/>
+        </svg>
+      </div>
+      <div class="preloader-text">AutoElite</div>
+      <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- PARTICLES BACKGROUND -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- NAVBAR -->
+  <nav id="navbar" class="navbar">
+    <div class="nav-container">
+      <a href="#home" class="nav-logo" id="nav-logo">
+        <div class="logo-icon">
+          <svg width="32" height="32" viewBox="0 0 100 100">
+            <polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="#FF6B00" stroke-width="6"/>
+            <text x="50" y="62" text-anchor="middle" fill="#FF6B00" font-size="38" font-weight="bold" font-family="Rajdhani">AE</text>
+          </svg>
+        </div>
+        <span class="logo-text">Auto<span class="accent">Elite</span></span>
+      </a>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home" class="nav-link active" data-page="home">Home</a></li>
+        <li><a href="#services" class="nav-link" data-page="services">Services</a></li>
+        <li><a href="#diagnostics" class="nav-link" data-page="diagnostics">Diagnostics</a></li>
+        <li><a href="#booking" class="nav-link" data-page="booking">Book Now</a></li>
+        <li><a href="#tracking" class="nav-link" data-page="tracking">Track Repair</a></li>
+        <li><a href="#shop" class="nav-link" data-page="shop">Parts Shop</a></li>
+        <li class="nav-dropdown">
+          <a href="#" class="nav-link">More ▾</a>
+          <ul class="dropdown-menu">
+            <li><a href="#team" class="nav-link">Our Team</a></li>
+            <li><a href="#gallery" class="nav-link">Gallery</a></li>
+            <li><a href="#blog" class="nav-link">Car Tips</a></li>
+            <li><a href="#testimonials" class="nav-link">Reviews</a></li>
+            <li><a href="#faq" class="nav-link">FAQ</a></li>
+            <li><a href="#estimator" class="nav-link">💰 Cost Estimator</a></li>
+            <li><a href="#emergency" class="nav-link">Emergency</a></li>
+            <li><a href="#about" class="nav-link">About Us</a></li>
+            <li><a href="#contact" class="nav-link">Contact</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="tel:+919510516503" class="nav-phone">📞 +91 95105 16503</a>
+        <a href="#booking" class="btn-book-nav">Book Service</a>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-inner">
+      <a href="#home" class="mobile-link" data-close>Home</a>
+      <a href="#services" class="mobile-link" data-close>Services</a>
+      <a href="#diagnostics" class="mobile-link" data-close>Diagnostics</a>
+      <a href="#booking" class="mobile-link" data-close>Book Appointment</a>
+      <a href="#tracking" class="mobile-link" data-close>Track Repair</a>
+      <a href="#shop" class="mobile-link" data-close>Parts Shop</a>
+      <a href="#team" class="mobile-link" data-close>Our Team</a>
+      <a href="#gallery" class="mobile-link" data-close>Gallery</a>
+      <a href="#blog" class="mobile-link" data-close>Car Tips</a>
+      <a href="#testimonials" class="mobile-link" data-close>Reviews</a>
+      <a href="#faq" class="mobile-link" data-close>FAQ</a>
+      <a href="#estimator" class="mobile-link" data-close>💰 Cost Estimator</a>
+      <a href="#emergency" class="mobile-link emergency" data-close>🚨 Emergency Service</a>
+      <a href="#about" class="mobile-link" data-close>About Us</a>
+      <a href="#contact" class="mobile-link" data-close>Contact</a>
+    </div>
+  </div>
+
+  <!-- ============ PAGE SECTIONS ============ -->
+
+  <!-- HOME / HERO -->
+  <section id="home" class="page-section active">
+    <div class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-badge reveal">⭐ #1 Rated Garage in the City</div>
+        <h1 class="hero-title reveal">
+          Premium<br/>
+          <span class="gradient-text">Automotive</span><br/>
+          Care Redefined
+        </h1>
+        <p class="hero-subtitle reveal">State-of-the-art diagnostics, expert mechanics, and transparent pricing. Your vehicle deserves the best — and we deliver nothing less.</p>
+        <div class="hero-actions reveal">
+          <a href="#booking" class="btn-primary">Book Service Now</a>
+          <a href="#diagnostics" class="btn-outline">Free Diagnosis →</a>
+        </div>
+        <div class="hero-stats reveal">
+          <div class="stat-item">
+            <span class="stat-number" data-count="15000">0</span><span class="stat-plus">+</span>
+            <span class="stat-label">Cars Serviced</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="98">0</span><span class="stat-plus">%</span>
+            <span class="stat-label">Satisfaction Rate</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="12">0</span><span class="stat-plus">+</span>
+            <span class="stat-label">Years Experience</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" data-count="50">0</span><span class="stat-plus">+</span>
+            <span class="stat-label">Expert Mechanics</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-car-wrap">
+        <div class="hero-car-glow"></div>
+        <img src="assets/hero.jpg" alt="Premium Garage Service" class="hero-img reveal-right" onerror="this.style.display='none'" />
+      </div>
+      <div class="scroll-indicator">
+        <div class="scroll-dot"></div>
+        <span>Scroll to explore</span>
+      </div>
+    </div>
+
+    <!-- QUICK ISSUE SOLVER -->
+    <div class="issue-solver-strip">
+      <div class="container">
+        <h2 class="section-eyebrow">Common Garage Issues? We Solve Them!</h2>
+        <div class="issue-cards">
+          <div class="issue-card" onclick="scrollToSection('diagnostics')">
+            <div class="issue-icon">🔧</div>
+            <div class="issue-text"><strong>Check Engine Light</strong><p>Free OBD scan & diagnosis</p></div>
+          </div>
+          <div class="issue-card" onclick="scrollToSection('services')">
+            <div class="issue-icon">🛞</div>
+            <div class="issue-text"><strong>Flat Tyre / Puncture</strong><p>Same-day repair & replacement</p></div>
+          </div>
+          <div class="issue-card" onclick="scrollToSection('services')">
+            <div class="issue-icon">🔋</div>
+            <div class="issue-text"><strong>Dead Battery</strong><p>Test, replace & recycle service</p></div>
+          </div>
+          <div class="issue-card" onclick="scrollToSection('services')">
+            <div class="issue-icon">❄️</div>
+            <div class="issue-text"><strong>AC Not Cooling</strong><p>Gas refill, compressor repair</p></div>
+          </div>
+          <div class="issue-card" onclick="scrollToSection('services')">
+            <div class="issue-icon">🛑</div>
+            <div class="issue-text"><strong>Brake Problems</strong><p>Pad, disc & fluid service</p></div>
+          </div>
+          <div class="issue-card" onclick="scrollToSection('emergency')">
+            <div class="issue-icon">🚨</div>
+            <div class="issue-text"><strong>Breakdown on Road</strong><p>24/7 Emergency assistance</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHY CHOOSE US -->
+    <div class="why-us">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-eyebrow">Why AutoElite</span>
+          <h2 class="section-title">The AutoElite <span class="accent">Difference</span></h2>
+          <p class="section-subtitle">We combine cutting-edge technology with old-school craftsmanship to deliver results you can trust.</p>
+        </div>
+        <div class="why-grid">
+          <div class="why-card reveal">
+            <div class="why-icon">🔬</div>
+            <h3>Advanced Diagnostics</h3>
+            <p>Latest OBD-II scanners and dealership-level diagnostic tools across all makes and models.</p>
+          </div>
+          <div class="why-card reveal">
+            <div class="why-icon">📱</div>
+            <h3>Real-Time Tracking</h3>
+            <p>Track your car's repair status live. Get SMS & WhatsApp updates at every stage.</p>
+          </div>
+          <div class="why-card reveal">
+            <div class="why-icon">💰</div>
+            <h3>Transparent Pricing</h3>
+            <p>No hidden charges. See the full breakdown before we start any work. Zero surprises.</p>
+          </div>
+          <div class="why-card reveal">
+            <div class="why-icon">🏆</div>
+            <h3>Certified Mechanics</h3>
+            <p>ASE-certified technicians with brand-specific training for European, Japanese & domestic cars.</p>
+          </div>
+          <div class="why-card reveal">
+            <div class="why-icon">🛡️</div>
+            <h3>Service Warranty</h3>
+            <p>All repairs backed by 6-month / 10,000 km warranty. We stand behind our work.</p>
+          </div>
+          <div class="why-card reveal">
+            <div class="why-icon">🚗</div>
+            <h3>Free Pickup & Drop</h3>
+            <p>Can't come to us? We'll pick up your vehicle and return it after service — at no extra cost.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">What We Do</span>
+        <h2 class="section-title">Complete <span class="accent">Automotive</span> Services</h2>
+        <p class="section-subtitle">From routine maintenance to complex engine overhauls — we handle it all with precision and care.</p>
+      </div>
+
+      <!-- SERVICE FILTER -->
+      <div class="service-filter">
+        <button class="filter-btn active" data-filter="all">All Services</button>
+        <button class="filter-btn" data-filter="engine">Engine</button>
+        <button class="filter-btn" data-filter="electrical">Electrical</button>
+        <button class="filter-btn" data-filter="body">Body & AC</button>
+        <button class="filter-btn" data-filter="tyres">Tyres & Wheels</button>
+        <button class="filter-btn" data-filter="service">Routine Service</button>
+      </div>
+
+      <div class="services-grid" id="services-grid">
+        <!-- Engine Services -->
+        <div class="service-card reveal" data-category="engine">
+          <div class="service-card-icon">⚙️</div>
+          <div class="service-card-content">
+            <h3>Engine Repair & Rebuild</h3>
+            <p>Complete engine diagnosis, repair, and full rebuild services for all vehicle types. We fix what others can't.</p>
+            <ul class="service-list">
+              <li>Engine overhaul & rebuild</li>
+              <li>Head gasket replacement</li>
+              <li>Valve grinding & boring</li>
+              <li>Timing belt replacement</li>
+            </ul>
+            <div class="service-price">From ₹5,000</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <div class="service-card reveal" data-category="engine">
+          <div class="service-card-icon">💧</div>
+          <div class="service-card-content">
+            <h3>Oil & Fluid Service</h3>
+            <p>Premium engine oil changes with OEM-grade fluids. Extended-drain synthetic options available.</p>
+            <ul class="service-list">
+              <li>Synthetic & semi-synthetic oil</li>
+              <li>Coolant flush & refill</li>
+              <li>Transmission fluid change</li>
+              <li>Brake fluid replacement</li>
+            </ul>
+            <div class="service-price">From ₹800</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <!-- Electrical -->
+        <div class="service-card reveal" data-category="electrical">
+          <div class="service-card-icon">⚡</div>
+          <div class="service-card-content">
+            <h3>Electrical & ECU Repair</h3>
+            <p>Modern vehicles are computers on wheels. Our certified auto-electricians handle every circuit.</p>
+            <ul class="service-list">
+              <li>ECU programming & repair</li>
+              <li>Wiring harness repair</li>
+              <li>Starter & alternator</li>
+              <li>Sensor replacement</li>
+            </ul>
+            <div class="service-price">From ₹2,000</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <div class="service-card reveal" data-category="electrical">
+          <div class="service-card-icon">🔋</div>
+          <div class="service-card-content">
+            <h3>Battery Service</h3>
+            <p>Battery testing, replacement, and proper disposal. EV battery health checks available.</p>
+            <ul class="service-list">
+              <li>Free battery health test</li>
+              <li>Battery replacement (all brands)</li>
+              <li>Jump start assistance</li>
+              <li>Old battery recycling</li>
+            </ul>
+            <div class="service-price">From ₹1,500</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <!-- Body & AC -->
+        <div class="service-card reveal" data-category="body">
+          <div class="service-card-icon">❄️</div>
+          <div class="service-card-content">
+            <h3>AC Service & Repair</h3>
+            <p>Beat the heat with our comprehensive AC service. Gas refill, compressor repair, and more.</p>
+            <ul class="service-list">
+              <li>AC gas recharging (R134a/R1234yf)</li>
+              <li>Compressor repair & replacement</li>
+              <li>Cabin filter replacement</li>
+              <li>Condenser & evaporator service</li>
+            </ul>
+            <div class="service-price">From ₹1,200</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <div class="service-card reveal" data-category="body">
+          <div class="service-card-icon">🎨</div>
+          <div class="service-card-content">
+            <h3>Denting & Painting</h3>
+            <p>Expert body repair and paint matching using computer colour analysis. Like it never happened.</p>
+            <ul class="service-list">
+              <li>Dent removal (PDR available)</li>
+              <li>Computer paint matching</li>
+              <li>Scratch & chip repair</li>
+              <li>Full body respray</li>
+            </ul>
+            <div class="service-price">From ₹3,500</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <!-- Tyres -->
+        <div class="service-card reveal" data-category="tyres">
+          <div class="service-card-icon">🛞</div>
+          <div class="service-card-content">
+            <h3>Tyre & Wheel Service</h3>
+            <p>Full tyre services from premium brands. 3D wheel alignment and dynamic balancing.</p>
+            <ul class="service-list">
+              <li>Tyre fitting (all brands)</li>
+              <li>3D computerised alignment</li>
+              <li>Dynamic wheel balancing</li>
+              <li>Puncture repair & tubeless</li>
+            </ul>
+            <div class="service-price">From ₹400</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <div class="service-card reveal" data-category="tyres">
+          <div class="service-card-icon">🛑</div>
+          <div class="service-card-content">
+            <h3>Brake System Service</h3>
+            <p>Your safety is our priority. Complete brake inspection, repair and upgrade services.</p>
+            <ul class="service-list">
+              <li>Brake pad & disc replacement</li>
+              <li>Brake fluid flush</li>
+              <li>ABS sensor repair</li>
+              <li>Handbrake adjustment</li>
+            </ul>
+            <div class="service-price">From ₹1,800</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <!-- Routine Service -->
+        <div class="service-card reveal" data-category="service">
+          <div class="service-card-icon">📋</div>
+          <div class="service-card-content">
+            <h3>Scheduled Servicing</h3>
+            <p>Manufacturer-recommended service intervals. Keep your warranty valid and your car healthy.</p>
+            <ul class="service-list">
+              <li>5,000 / 10,000 / 15,000 km service</li>
+              <li>Filter replacements (Air, Oil, Fuel)</li>
+              <li>Spark plug replacement</li>
+              <li>Multi-point inspection (50+ checks)</li>
+            </ul>
+            <div class="service-price">From ₹2,500</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+
+        <div class="service-card reveal" data-category="service">
+          <div class="service-card-icon">✨</div>
+          <div class="service-card-content">
+            <h3>Car Detailing & Wash</h3>
+            <p>Professional interior and exterior detailing. Ceramic coating and PPF available.</p>
+            <ul class="service-list">
+              <li>Interior deep cleaning</li>
+              <li>Machine polishing</li>
+              <li>Ceramic coating (3H/7H/9H)</li>
+              <li>Paint Protection Film (PPF)</li>
+            </ul>
+            <div class="service-price">From ₹1,500</div>
+            <a href="#booking" class="service-book-btn">Book This Service</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIAGNOSTICS -->
+  <section id="diagnostics" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Smart Technology</span>
+        <h2 class="section-title">Vehicle <span class="accent">Diagnostics</span> Center</h2>
+        <p class="section-subtitle">Our state-of-the-art diagnostic equipment reads your vehicle's ECU in minutes — pinpointing issues with precision.</p>
+      </div>
+      <div class="diag-layout">
+        <div class="diag-visual reveal-left">
+          <img src="assets/diagnostics.jpg" alt="Vehicle Diagnostics" class="diag-img"/>
+          <div class="diag-badge">Free First Scan</div>
+        </div>
+        <div class="diag-content">
+          <div class="diag-tool reveal">
+            <div class="diag-tool-icon">🖥️</div>
+            <div>
+              <h3>OBD-II Full System Scan</h3>
+              <p>Read and clear fault codes from Engine, Transmission, ABS, Airbag, TPMS, and all other modules.</p>
+              <span class="diag-tag free">FREE</span>
+            </div>
+          </div>
+          <div class="diag-tool reveal">
+            <div class="diag-tool-icon">📊</div>
+            <div>
+              <h3>Live Data Analysis</h3>
+              <p>Monitor real-time engine parameters — O2 sensors, fuel trims, coolant temp, MAF readings, and 100+ PIDs.</p>
+            </div>
+          </div>
+          <div class="diag-tool reveal">
+            <div class="diag-tool-icon">🔌</div>
+            <div>
+              <h3>ECU Programming & Coding</h3>
+              <p>Module programming, key coding, injector calibration, and software updates for major brands.</p>
+            </div>
+          </div>
+          <div class="diag-tool reveal">
+            <div class="diag-tool-icon">🎯</div>
+            <div>
+              <h3>4-Wheel Alignment Analysis</h3>
+              <p>3D computerized alignment with before/after printout. Covers camber, caster, toe, and thrust angle.</p>
+            </div>
+          </div>
+          <div class="diag-tool reveal">
+            <div class="diag-tool-icon">💨</div>
+            <div>
+              <h3>Exhaust Emissions Test</h3>
+              <p>PUC-grade emissions testing with detailed report. Required for pollution certificates.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ISSUE LOOKUP TOOL -->
+      <div class="issue-lookup reveal">
+        <h3>🔍 Symptom Checker — What's Wrong With My Car?</h3>
+        <p>Select a symptom and get instant insights on possible causes and recommended action.</p>
+        <div class="symptom-grid">
+          <button class="symptom-btn" onclick="showSymptom('check-engine')">Check Engine Light On</button>
+          <button class="symptom-btn" onclick="showSymptom('vibration')">Vibration While Driving</button>
+          <button class="symptom-btn" onclick="showSymptom('overheating')">Engine Overheating</button>
+          <button class="symptom-btn" onclick="showSymptom('hard-start')">Hard to Start</button>
+          <button class="symptom-btn" onclick="showSymptom('smoke')">White/Blue Smoke</button>
+          <button class="symptom-btn" onclick="showSymptom('brake-noise')">Brake Squealing/Grinding</button>
+          <button class="symptom-btn" onclick="showSymptom('poor-mileage')">Poor Fuel Economy</button>
+          <button class="symptom-btn" onclick="showSymptom('ac-warm')">AC Blowing Warm Air</button>
+          <button class="symptom-btn" onclick="showSymptom('oil-leak')">Oil Leak Under Car</button>
+          <button class="symptom-btn" onclick="showSymptom('steering')">Steering Pulling to Side</button>
+        </div>
+        <div id="symptom-result" class="symptom-result hidden">
+          <div class="symptom-result-inner">
+            <div id="symptom-icon" class="s-icon"></div>
+            <div id="symptom-title" class="s-title"></div>
+            <div id="symptom-causes" class="s-causes"></div>
+            <div id="symptom-action" class="s-action"></div>
+            <a href="#booking" class="btn-primary" style="margin-top:1rem">Book Diagnosis Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section id="booking" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Schedule Your Visit</span>
+        <h2 class="section-title">Book Your <span class="accent">Appointment</span></h2>
+        <p class="section-subtitle">Quick and easy online booking. Get a confirmation SMS within minutes.</p>
+      </div>
+      <div class="booking-layout">
+        <div class="booking-form-wrap reveal-left">
+          <form id="booking-form" class="booking-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="booking-name">Full Name *</label>
+                <input type="text" id="booking-name" placeholder="John Smith" required />
+              </div>
+              <div class="form-group">
+                <label for="booking-phone">Phone Number *</label>
+                <input type="tel" id="booking-phone" placeholder="+91 95105 16503" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="booking-email">Email Address</label>
+                <input type="email" id="booking-email" placeholder="john@email.com" />
+              </div>
+              <div class="form-group">
+                <label for="booking-vehicle">Vehicle Make & Model *</label>
+                <input type="text" id="booking-vehicle" placeholder="e.g. Honda City 2022" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="booking-reg">Registration Number</label>
+                <input type="text" id="booking-reg" placeholder="e.g. MH 01 AB 1234" />
+              </div>
+              <div class="form-group">
+                <label for="booking-km">Current Odometer (km)</label>
+                <input type="number" id="booking-km" placeholder="e.g. 45000" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Service(s) Required * (Select one or more)</label>
+              <div id="service-selection-grid" class="service-selection-grid">
+                <!-- Dynamically populated from JS -->
+              </div>
+              <input type="hidden" id="selected-services-data" required />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="booking-date">Preferred Date *</label>
+                <input type="date" id="booking-date" required />
+                <script>
+                  document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
+                </script>
+              </div>
+              <div class="form-group">
+                <label for="booking-time">Preferred Time *</label>
+                <select id="booking-time" required>
+                  <option value="">— Select Time —</option>
+                  <option>08:00 AM</option>
+                  <option>09:00 AM</option>
+                  <option>10:00 AM</option>
+                  <option>11:00 AM</option>
+                  <option>12:00 PM</option>
+                  <option>02:00 PM</option>
+                  <option>03:00 PM</option>
+                  <option>04:00 PM</option>
+                  <option>05:00 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="booking-notes">Additional Notes / Problem Description</label>
+              <textarea id="booking-notes" rows="4" placeholder="Describe any symptoms, warning lights, or specific concerns..."></textarea>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="pickup-drop" />
+              <label for="pickup-drop">I need free vehicle pickup & drop service</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="whatsapp-updates" checked />
+              <label for="whatsapp-updates">Send me WhatsApp updates on my repair status</label>
+            </div>
+            <div id="booking-price-display" class="booking-price-tag hidden">Estimated Service Price: <span id="booking-price-amount">₹0</span></div>
+            <button type="submit" class="btn-primary btn-full" id="booking-submit">
+              <span>Confirm Booking & Proceed</span>
+              <div class="btn-loader hidden"></div>
+            </button>
+          </form>
+
+          <!-- PAYMENT MODAL -->
+          <div id="payment-modal" class="payment-modal hidden">
+            <div class="payment-modal-inner">
+              <h3>Secure Checkout</h3>
+              <p>Booking ID: <strong id="pay-ref"></strong></p>
+              <div class="pay-summary">
+                <div class="pay-row"><span>Service:</span> <span id="pay-service"></span></div>
+                <div class="pay-row"><span>Total Amount:</span> <strong id="pay-amount"></strong></div>
+              </div>
+              <div class="payment-methods">
+                <div class="pay-method active">💳 Card</div>
+                <div class="pay-method">📱 UPI / QR</div>
+                <div class="pay-method">🏦 Net Banking</div>
+              </div>
+              <div class="card-inputs">
+                <input type="text" placeholder="Card Number" value="4242 4242 4242 4242" disabled>
+                <div class="form-row">
+                    <input type="text" placeholder="MM/YY" value="12/28" disabled>
+                    <input type="text" placeholder="CVC" value="***" disabled>
+                </div>
+              </div>
+              <p style="font-size:0.7rem; color:var(--grey-3); margin-bottom:1rem">Note: This is a demo gateway. No real money will be charged.</p>
+              <button class="btn-primary btn-full" onclick="completePayment()">Pay Now</button>
+              <button class="btn-outline btn-full" style="margin-top:0.5rem" onclick="document.getElementById('payment-modal').classList.add('hidden')">Cancel</button>
+            </div>
+          </div>
+
+          <div id="booking-success" class="booking-success hidden">
+            <div class="success-animation">🎉</div>
+            <h3>Booking & Payment Confirmed!</h3>
+            <p>Your appointment and advance payment have been received. You'll receive a confirmation call/SMS shortly.</p>
+            <p class="booking-ref">Booking Ref: <strong id="booking-ref-num"></strong></p>
+            <div class="payment-receipt">Receipt ID: <span id="payment-id">PAY-827391</span></div>
+            <a href="#tracking" class="btn-outline" style="margin-top:1.5rem">Track Your Repair</a>
+          </div>
+        </div>
+
+        <div class="booking-info reveal-right">
+          <div class="booking-info-card">
+            <h3>🕐 Working Hours</h3>
+            <table class="hours-table">
+              <tr><td>Monday – Friday</td><td><strong>8:00 AM – 7:00 PM</strong></td></tr>
+              <tr><td>Saturday</td><td><strong>8:00 AM – 6:00 PM</strong></td></tr>
+              <tr><td>Sunday</td><td><strong>10:00 AM – 4:00 PM</strong></td></tr>
+              <tr class="emergency-row"><td>Emergency (24/7)</td><td><strong class="accent">Always Open</strong></td></tr>
+            </table>
+          </div>
+          <div class="booking-info-card">
+            <h3>📍 Location</h3>
+            <p>AutoElite Garage Complex<br/>Plot No. 15, Industrial Area Phase 2<br/>Near Highway Flyover, City – 400001</p>
+            <a href="https://maps.google.com" target="_blank" class="map-link">Open in Google Maps →</a>
+          </div>
+          <div class="booking-info-card">
+            <h3>⚡ Quick Service Times</h3>
+            <div class="time-list">
+              <div class="time-item"><span>Oil Change</span><span>~45 min</span></div>
+              <div class="time-item"><span>Tyre Fitting</span><span>~30 min</span></div>
+              <div class="time-item"><span>AC Gas Refill</span><span>~1 hour</span></div>
+              <div class="time-item"><span>Full Service</span><span>~3-4 hours</span></div>
+              <div class="time-item"><span>Brake Service</span><span>~1.5 hours</span></div>
+              <div class="time-item"><span>Diagnostics</span><span>~30 min</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRACKING -->
+  <section id="tracking" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Live Updates</span>
+        <h2 class="section-title">Track Your <span class="accent">Repair</span></h2>
+        <p class="section-subtitle">Enter your booking reference or vehicle registration number to see real-time repair status.</p>
+      </div>
+
+      <div class="tracking-layout">
+        <div class="tracking-search reveal">
+          <div class="tracking-form">
+            <input type="text" id="tracking-input" placeholder="Enter Booking Ref or Reg Number (e.g. AE2024001)" class="track-input"/>
+            <button class="btn-primary" onclick="trackRepair()">Track Now</button>
+          </div>
+          <div class="demo-hint">Try demo: <button onclick="demoTrack()" class="demo-btn">AE2024001</button></div>
+        </div>
+
+        <div id="tracking-result" class="tracking-result hidden reveal">
+          <div class="track-header">
+            <div class="track-vehicle">
+              <div class="track-vehicle-icon">🚗</div>
+              <div>
+                <div class="track-vehicle-name" id="track-vehicle-name">Honda City 2022</div>
+                <div class="track-reg" id="track-reg">MH 01 AB 2024</div>
+              </div>
+            </div>
+            <div class="track-status-badge" id="track-status-badge">In Progress</div>
+          </div>
+
+          <div class="track-timeline">
+            <div class="track-step completed" id="step-received">
+              <div class="track-step-circle">✓</div>
+              <div class="track-step-content">
+                <div class="track-step-title">Vehicle Received</div>
+                <div class="track-step-time" id="step-received-time">Today, 9:00 AM</div>
+                <div class="track-step-desc">Your vehicle has been received and checked in at our facility.</div>
+              </div>
+            </div>
+            <div class="track-step completed" id="step-inspection">
+              <div class="track-step-circle">✓</div>
+              <div class="track-step-content">
+                <div class="track-step-title">Initial Inspection</div>
+                <div class="track-step-time" id="step-inspection-time">Today, 9:45 AM</div>
+                <div class="track-step-desc">Multi-point inspection completed. Fault codes read. Service plan confirmed.</div>
+              </div>
+            </div>
+            <div class="track-step active" id="step-work">
+              <div class="track-step-circle pulse">
+                <div class="pulse-ring"></div>
+                🔧
+              </div>
+              <div class="track-step-content">
+                <div class="track-step-title">Work In Progress</div>
+                <div class="track-step-time">Est. 11:30 AM – 2:00 PM</div>
+                <div class="track-step-desc">Technician is performing: <strong>Engine oil change, air filter replacement, brake pad inspection, tyre rotation.</strong></div>
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar-fill" style="width:65%"></div>
+                  <span>65% Complete</span>
+                </div>
+              </div>
+            </div>
+            <div class="track-step" id="step-qc">
+              <div class="track-step-circle">4</div>
+              <div class="track-step-content">
+                <div class="track-step-title">Quality Check</div>
+                <div class="track-step-time">Est. 2:30 PM</div>
+                <div class="track-step-desc">Senior technician will verify all work before handover.</div>
+              </div>
+            </div>
+            <div class="track-step" id="step-ready">
+              <div class="track-step-circle">5</div>
+              <div class="track-step-content">
+                <div class="track-step-title">Ready for Pickup</div>
+                <div class="track-step-time">Est. 3:00 PM</div>
+                <div class="track-step-desc">Vehicle wash & detail included free of charge before handover.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="track-invoice">
+            <h3>📄 Estimated Invoice</h3>
+            <table class="invoice-table">
+              <tr><td>Engine Oil (5W-40 Synthetic – 4L)</td><td>₹2,800</td></tr>
+              <tr><td>Oil Filter</td><td>₹350</td></tr>
+              <tr><td>Air Filter</td><td>₹450</td></tr>
+              <tr><td>Labour Charges</td><td>₹600</td></tr>
+              <tr class="total-row"><td><strong>Total (incl. GST)</strong></td><td><strong>₹4,950</strong></td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTS SHOP -->
+  <section id="shop" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Genuine Parts</span>
+        <h2 class="section-title">Auto Parts <span class="accent">Shop</span></h2>
+        <p class="section-subtitle">OEM, OES, and performance aftermarket parts at competitive prices. All parts come with warranty.</p>
+      </div>
+
+      <div class="shop-search-bar">
+        <input type="text" id="shop-search" placeholder="🔍 Search parts — e.g. brake pads, oil filter, spark plugs..." oninput="filterParts()" />
+      </div>
+
+      <div class="shop-categories">
+        <button class="cat-btn active" onclick="filterCategory('all', this)">All Parts</button>
+        <button class="cat-btn" onclick="filterCategory('engine', this)">Engine Parts</button>
+        <button class="cat-btn" onclick="filterCategory('brakes', this)">Brakes</button>
+        <button class="cat-btn" onclick="filterCategory('electrical', this)">Electrical</button>
+        <button class="cat-btn" onclick="filterCategory('filters', this)">Filters</button>
+        <button class="cat-btn" onclick="filterCategory('fluids', this)">Fluids & Oils</button>
+        <button class="cat-btn" onclick="filterCategory('suspension', this)">Suspension</button>
+      </div>
+
+      <div class="shop-grid" id="shop-grid">
+        <!-- Parts populated by JS -->
+      </div>
+
+      <div class="cart-container">
+        <div class="cart-icon-wrap" onclick="toggleCart()">
+          🛒 <span class="cart-count" id="cart-count">0</span>
+        </div>
+      </div>
+
+      <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+          <h3>Your Cart</h3>
+          <button onclick="toggleCart()" class="cart-close">✕</button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-total">
+          <span>Total:</span>
+          <span id="cart-total-price">₹0</span>
+        </div>
+        <button class="btn-primary btn-full" onclick="checkoutCart()">Proceed to Checkout</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">The Experts</span>
+        <h2 class="section-title">Meet Our <span class="accent">Team</span></h2>
+        <p class="section-subtitle">Certified, passionate, and deeply experienced. Our technicians are the best in the business.</p>
+      </div>
+      <div class="team-grid">
+        <div class="team-card reveal">
+          <div class="team-card-img-wrap">
+            <img src="assets/team.jpg" alt="Rajesh Kumar – Chief Mechanic" class="team-img"/>
+            <div class="team-overlay">
+              <div class="team-skills">
+                <span>Engine Expert</span>
+                <span>20+ Years</span>
+              </div>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Rajesh Kumar</h3>
+            <span class="team-role">Chief Mechanic & Founder</span>
+            <div class="team-certs">🏆 ASE Master Certified</div>
+            <p>20+ years turning wrenches. Specializes in European luxury brands and complex engine overhauls.</p>
+          </div>
+        </div>
+        <div class="team-card reveal">
+          <div class="team-card-img-wrap">
+            <img src="assets/team.jpg" alt="Priya Sharma – Auto Electrician" class="team-img filtered-blue"/>
+            <div class="team-overlay">
+              <div class="team-skills">
+                <span>ECU Wizard</span>
+                <span>12+ Years</span>
+              </div>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Priya Sharma</h3>
+            <span class="team-role">Senior Auto Electrician</span>
+            <div class="team-certs">🏆 OEM Certified</div>
+            <p>ECU diagnostic specialist. Can decode any fault code and bring dead electronics back to life.</p>
+          </div>
+        </div>
+        <div class="team-card reveal">
+          <div class="team-card-img-wrap">
+            <img src="assets/team.jpg" alt="Arun Patel – Tyre Specialist" class="team-img filtered-green"/>
+            <div class="team-overlay">
+              <div class="team-skills">
+                <span>Alignment Pro</span>
+                <span>10+ Years</span>
+              </div>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Arun Patel</h3>
+            <span class="team-role">Tyre & Suspension Expert</span>
+            <div class="team-certs">🏆 Continental Certified</div>
+            <p>Wheel alignment perfectionist. Has aligned over 8,000 vehicles to factory spec and beyond.</p>
+          </div>
+        </div>
+        <div class="team-card reveal">
+          <div class="team-card-img-wrap">
+            <img src="assets/team.jpg" alt="Meena Singh – AC Specialist" class="team-img filtered-orange"/>
+            <div class="team-overlay">
+              <div class="team-skills">
+                <span>AC Guru</span>
+                <span>8+ Years</span>
+              </div>
+            </div>
+          </div>
+          <div class="team-info">
+            <h3>Meena Singh</h3>
+            <span class="team-role">AC & Climate Specialist</span>
+            <div class="team-certs">🏆 HVAC Certified</div>
+            <p>HVAC system expert — from refrigerant recovery to full compressor rebuilds for all climates.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Our Work</span>
+        <h2 class="section-title">Workshop <span class="accent">Gallery</span></h2>
+        <p class="section-subtitle">See our facility, our team at work, and stunning before/after transformations.</p>
+      </div>
+
+      <div class="gallery-tabs">
+        <button class="gallery-tab active" onclick="switchGallery('all', this)">All</button>
+        <button class="gallery-tab" onclick="switchGallery('workshop', this)">Workshop</button>
+        <button class="gallery-tab" onclick="switchGallery('before-after', this)">Before / After</button>
+        <button class="gallery-tab" onclick="switchGallery('cars', this)">Cars We've Fixed</button>
+      </div>
+
+      <div class="gallery-grid" id="gallery-grid">
+        <!-- Populated by JS with color-coded placeholder blocks -->
+      </div>
+
+      <!-- LIGHTBOX -->
+      <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <div class="lightbox-inner" onclick="event.stopPropagation()">
+          <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+          <div id="lightbox-content" class="lightbox-content"></div>
+          <div id="lightbox-caption" class="lightbox-caption"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG / CAR TIPS -->
+  <section id="blog" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Knowledge Hub</span>
+        <h2 class="section-title">Car Maintenance <span class="accent">Tips</span></h2>
+        <p class="section-subtitle">Expert advice to keep your vehicle running smoothly between service visits.</p>
+      </div>
+      <div class="blog-grid">
+        <div class="blog-card reveal featured">
+          <div class="blog-card-badge">Must Read</div>
+          <div class="blog-card-category">Engine Care</div>
+          <h3 class="blog-card-title">10 Signs Your Engine Oil Needs Changing Right Now</h3>
+          <p class="blog-card-excerpt">Dark, dirty oil, ticking sounds, and poor performance are all red flags. Here's how to tell if you're overdue for an oil change — and what happens if you ignore it.</p>
+          <div class="blog-card-meta">
+            <span>📅 April 2024</span>
+            <span>⏱ 5 min read</span>
+          </div>
+          <a href="#" class="blog-read-btn" onclick="openBlogPost('oil-signs'); return false;">Read Article →</a>
+        </div>
+        <div class="blog-card reveal">
+          <div class="blog-card-category">Tyres</div>
+          <h3 class="blog-card-title">Tyre Pressure 101: Why It Matters More Than You Think</h3>
+          <p class="blog-card-excerpt">Under-inflated tyres can cut fuel economy by 3% per PSI. Learn the correct pressure for your car and how often to check it.</p>
+          <div class="blog-card-meta"><span>📅 March 2024</span><span>⏱ 4 min read</span></div>
+          <a href="#" class="blog-read-btn" onclick="openBlogPost('tyre-pressure'); return false;">Read Article →</a>
+        </div>
+        <div class="blog-card reveal">
+          <div class="blog-card-category">Electrical</div>
+          <h3 class="blog-card-title">Why Your Car Battery Dies in Winter — and How to Prevent It</h3>
+          <p class="blog-card-excerpt">Cold weather is brutal on batteries. A battery healthy in summer can fail completely when temps drop. Here's your winter battery guide.</p>
+          <div class="blog-card-meta"><span>📅 Feb 2024</span><span>⏱ 6 min read</span></div>
+          <a href="#" class="blog-read-btn" onclick="openBlogPost('battery-winter'); return false;">Read Article →</a>
+        </div>
+        <div class="blog-card reveal">
+          <div class="blog-card-category">AC</div>
+          <h3 class="blog-card-title">AC Running But Not Cooling? 7 Common Causes Explained</h3>
+          <p class="blog-card-excerpt">Low refrigerant isn't the only culprit. A dirty cabin filter or a faulty condenser fan can cause warm air too. Diagnose it yourself first.</p>
+          <div class="blog-card-meta"><span>📅 Jan 2024</span><span>⏱ 5 min read</span></div>
+          <a href="#" class="blog-read-btn" onclick="openBlogPost('ac-not-cooling'); return false;">Read Article →</a>
+        </div>
+        <div class="blog-card reveal">
+          <div class="blog-card-category">Brakes</div>
+          <h3 class="blog-card-title">Squeaky Brakes: When to Ignore It and When to Panic</h3>
+          <p class="blog-card-excerpt">Not all brake noise is dangerous — but grinding metal is. Learn the sounds, causes, and when to book a brake service immediately.</p>
+          <div class="blog-card-meta"><span>📅 Dec 2023</span><span>⏱ 4 min read</span></div>
+          <a href="#" class="blog-read-btn" onclick="openBlogPost('squeaky-brakes'); return false;">Read Article →</a>
+        </div>
+        <div class="blog-card reveal">
+          <div class="blog-card-category">DIY Tips</div>
+          <h3 class="blog-card-title">5 Car Checks You Can Do Yourself Every Month</h3>
+          <p class="blog-card-excerpt">You don't need a mechanic for everything. These 5 quick checks — oil level, tyre pressure, lights, wipers, coolant — take under 10 minutes.</p>
+          <div class="blog-card-meta"><span>📅 Nov 2023</span><span>⏱ 7 min read</span></div>
+          <a href="#" class="blog-read-btn" onclick="openBlogPost('diy-checks'); return false;">Read Article →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOG POST MODAL -->
+    <div class="blog-modal" id="blog-modal">
+      <div class="blog-modal-inner">
+        <button class="blog-modal-close" onclick="closeBlogModal()">✕</button>
+        <div id="blog-modal-content"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">What Customers Say</span>
+        <h2 class="section-title">Real Reviews, <span class="accent">Real Results</span></h2>
+        <p class="section-subtitle">Don't just take our word for it — hear from thousands of satisfied customers.</p>
+      </div>
+
+      <div class="rating-overview reveal">
+        <div class="overall-rating">
+          <div class="big-score">4.9</div>
+          <div class="stars">★★★★★</div>
+          <div class="review-count">Based on 2,847 reviews</div>
+        </div>
+        <div class="rating-bars">
+          <div class="rating-bar-row"><span>5★</span><div class="rating-bar"><div class="rating-bar-fill" style="width:92%"></div></div><span>92%</span></div>
+          <div class="rating-bar-row"><span>4★</span><div class="rating-bar"><div class="rating-bar-fill" style="width:6%"></div></div><span>6%</span></div>
+          <div class="rating-bar-row"><span>3★</span><div class="rating-bar"><div class="rating-bar-fill" style="width:1%"></div></div><span>1%</span></div>
+          <div class="rating-bar-row"><span>2★</span><div class="rating-bar"><div class="rating-bar-fill" style="width:0.5%"></div></div><span>0.5%</span></div>
+          <div class="rating-bar-row"><span>1★</span><div class="rating-bar"><div class="rating-bar-fill" style="width:0.5%"></div></div><span>0.5%</span></div>
+        </div>
+        <div class="platform-ratings">
+          <div class="platform-badge"><span>Google</span><span>★ 4.9</span></div>
+          <div class="platform-badge"><span>JustDial</span><span>★ 4.8</span></div>
+          <div class="platform-badge"><span>MechAdvisor</span><span>★ 5.0</span></div>
+        </div>
+      </div>
+
+      <div class="testimonials-slider" id="testimonials-slider">
+        <div class="testimonials-track" id="testimonials-track">
+          <!-- populated by JS -->
+        </div>
+        <div class="slider-controls">
+          <button class="slider-btn prev" onclick="slideTestimonials(-1)" id="testi-prev">‹</button>
+          <div class="slider-dots" id="slider-dots"></div>
+          <button class="slider-btn next" onclick="slideTestimonials(1)" id="testi-next">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Common Questions</span>
+        <h2 class="section-title">Frequently Asked <span class="accent">Questions</span></h2>
+        <p class="section-subtitle">Everything you need to know before bringing your car in for service.</p>
+      </div>
+      <div class="faq-layout">
+        <div class="faq-list">
+          <div class="faq-item reveal">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              How long does a full car service take?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-a">
+              <p>A standard service (oil, filter, fluid top-up, multi-point check) typically takes 2–3 hours. A major service with additional repairs may take a full day. We'll give you an accurate estimate after initial inspection, and we offer a comfortable waiting lounge or free pickup/drop if you prefer.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              Do you service all car brands?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-a">
+              <p>Yes! We service all makes and models — Japanese (Honda, Toyota, Suzuki), European (BMW, Mercedes, Audi, Volkswagen), American, Korean, and Indian brands (Tata, Mahindra, Maruti). We have brand-specific scan tools and training for each.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              Are your spare parts genuine (OEM)?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-a">
+              <p>We use OEM (Original Equipment Manufacturer) parts wherever possible. For some repairs, we offer OES (Original Equipment Supplier) parts as a cost-effective alternative with the same quality spec. All parts come with manufacturer warranty, and we'll always show you the part before fitting it.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              What is your warranty on repairs?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-a">
+              <p>All our repairs are backed by a 6-month / 10,000 km warranty (whichever comes first). This covers parts and labour for the specific repair done. If any issue recurs within this period, we'll fix it free of charge, no questions asked.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              Can I wait at the garage while my car is being serviced?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-a">
+              <p>Absolutely! We have a premium air-conditioned customer lounge with complimentary tea/coffee, high-speed Wi-Fi, phone charging stations, and live repair updates on monitors. You're also welcome to watch work being done through our viewing window.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              Do you offer pickup and drop service?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-a">
+              <p>Yes! We offer free pickup and drop service within a 15 km radius. Simply select the option when booking online or call us. Our driver will collect your car at your preferred time and return it after service.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              How do I pay? Do you accept cards and UPI?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-a">
+              <p>We accept all payment methods: Cash, Credit/Debit Card (Visa, Mastercard, Amex), UPI (Google Pay, PhonePe, Paytm), Net Banking, and EMI options through partner banks. No extra charges for digital payments.</p>
+            </div>
+          </div>
+          <div class="faq-item reveal">
+            <button class="faq-q" onclick="toggleFaq(this)">
+              Can I get an estimate before work begins?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-a">
+              <p>Always. We never start any work without your written or verbally confirmed approval on the cost estimate. After inspection, we'll send you a detailed WhatsApp quote showing parts costs, labour, and taxes. You approve it — then work begins.</p>
+            </div>
+          </div>
+        </div>
+        <div class="faq-contact-box reveal-right">
+          <div class="faq-still-question">
+            <h3>Still Have Questions?</h3>
+            <p>Our service advisors are here to help. Reach us on WhatsApp or give us a call — typically respond in under 5 minutes during business hours.</p>
+            <a href="tel:+919510516503" class="btn-primary">📞 Call Us Now</a>
+            <a href="https://wa.me/919510516503" class="btn-outline whatsapp-btn" target="_blank">💬 WhatsApp Us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMERGENCY -->
+  <section id="emergency" class="page-section emergency-section">
+    <div class="emergency-bg-pulse"></div>
+    <div class="container">
+      <div class="emergency-layout">
+        <div class="emergency-content reveal">
+          <div class="emergency-badge">🚨 24/7 Emergency Service</div>
+          <h2 class="emergency-title">Broken Down?<br/>We're On Our Way.</h2>
+          <p class="emergency-desc">Our emergency response team reaches you anywhere within city limits in under 45 minutes. Day or night, rain or shine — we've got your back.</p>
+          <a href="tel:+919510516503" class="btn-emergency">
+            <span class="em-call-icon">📞</span>
+            Call Emergency Line: +91 95105 16503
+          </a>
+          <div class="emergency-services">
+            <div class="em-service-item">✅ Jump Start / Battery Boost</div>
+            <div class="em-service-item">✅ Tyre Change on Road</div>
+            <div class="em-service-item">✅ Fuel Delivery</div>
+            <div class="em-service-item">✅ Towing Service</div>
+            <div class="em-service-item">✅ Lockout Assistance</div>
+            <div class="em-service-item">✅ On-Site Minor Repairs</div>
+          </div>
+        </div>
+        <div class="emergency-map reveal-right">
+          <div class="map-placeholder">
+            <div class="map-pulse"></div>
+            <div class="map-label">📍 AutoElite Emergency Response Zone</div>
+            <div class="response-time">⚡ Avg. Response: 35 mins</div>
+            <div class="coverage-info">Covering 40 km radius</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Our Story</span>
+        <h2 class="section-title">About <span class="accent">AutoElite</span></h2>
+      </div>
+      <div class="about-layout">
+        <div class="about-content reveal-left">
+          <p class="about-lead">Founded in 2012 by master mechanic Rajesh Kumar, AutoElite began as a small workshop with a big mission: to bring dealership-quality service to independent garage pricing.</p>
+          <p>What started as a 3-bay workshop has grown into a 20-bay state-of-the-art facility serving over 15,000 vehicles annually. We expanded not just in size, but in capabilities — investing heavily in equipment, training, and technology to stay ahead of the rapidly evolving automotive landscape.</p>
+          <p>Today, AutoElite is the city's most trusted independent garage, known for our precision, transparency, and genuine care for every customer. We treat your car as if it were our own — because we know how much it matters to you.</p>
+          <div class="about-milestones">
+            <div class="milestone"><span class="milestone-year">2012</span><span>Founded with 3 bays</span></div>
+            <div class="milestone"><span class="milestone-year">2016</span><span>Expanded to 10 bays, added diagnostics</span></div>
+            <div class="milestone"><span class="milestone-year">2019</span><span>Launched 24/7 emergency service</span></div>
+            <div class="milestone"><span class="milestone-year">2022</span><span>Opened Parts Shop, added EV services</span></div>
+            <div class="milestone"><span class="milestone-year">2024</span><span>20 bays, 50+ team members, city's #1</span></div>
+          </div>
+        </div>
+        <div class="about-certs reveal-right">
+          <h3>Certifications & Memberships</h3>
+          <div class="cert-grid">
+            <div class="cert-badge">🏆 ASE Master Certified</div>
+            <div class="cert-badge">✅ ISO 9001:2015</div>
+            <div class="cert-badge">🟠 Bosch Service Partner</div>
+            <div class="cert-badge">🔵 Continental Certified</div>
+            <div class="cert-badge">💚 Shell Helix Oil Partner</div>
+            <div class="cert-badge">🔴 Mobil 1 Authorized</div>
+          </div>
+          <h3 style="margin-top:2rem">Our Values</h3>
+          <div class="values-list">
+            <div class="value-item"><span>⚖️</span><div><strong>Honesty First</strong><p>We never recommend work that isn't needed.</p></div></div>
+            <div class="value-item"><span>🔬</span><div><strong>Precision</strong><p>Every job done to OEM specification or better.</p></div></div>
+            <div class="value-item"><span>🤝</span><div><strong>Respect</strong><p>For your time, your car, and your budget.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Get In Touch</span>
+        <h2 class="section-title">Contact <span class="accent">Us</span></h2>
+        <p class="section-subtitle">Whether you have a question, a complaint, or just want to say hello — we're all ears.</p>
+      </div>
+      <div class="contact-layout">
+        <div class="contact-info reveal-left">
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div>
+              <h3>Visit Us</h3>
+              <p>AutoElite Garage Complex, Plot No. 15<br/>Industrial Area Phase 2, Near Highway Flyover<br/>City – 400001</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <div>
+              <h3>Call Us</h3>
+              <p>Main: <a href="tel:+919510516503">+91 95105 16503</a><br/>Emergency: <a href="tel:+919876543211">+91 98765 43211</a></p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <div>
+              <h3>Email</h3>
+              <p><a href="mailto:hello@autoelitegarage.com">hello@autoelitegarage.com</a><br/><a href="mailto:support@autoelitegarage.com">support@autoelitegarage.com</a></p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">💬</div>
+            <div>
+              <h3>WhatsApp</h3>
+              <p><a href="https://wa.me/919510516503" target="_blank">Chat with us on WhatsApp</a></p>
+            </div>
+          </div>
+          <div class="social-links">
+            <a href="#" class="social-btn">📘 Facebook</a>
+            <a href="#" class="social-btn">📸 Instagram</a>
+            <a href="#" class="social-btn">🎥 YouTube</a>
+          </div>
+        </div>
+        <div class="contact-form-wrap reveal-right">
+          <form id="contact-form" class="booking-form" novalidate>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-name">Name *</label>
+                <input type="text" id="contact-name" placeholder="Your name" required />
+              </div>
+              <div class="form-group">
+                <label for="contact-phone">Phone</label>
+                <input type="tel" id="contact-phone" placeholder="+91 xxxxx xxxxx" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="contact-email">Email *</label>
+              <input type="email" id="contact-email" placeholder="you@email.com" required />
+            </div>
+            <div class="form-group">
+              <label for="contact-subject">Subject</label>
+              <select id="contact-subject">
+                <option>General Enquiry</option>
+                <option>Service Quote Request</option>
+                <option>Complaint / Feedback</option>
+                <option>Partnership</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="contact-message">Message *</label>
+              <textarea id="contact-message" rows="5" placeholder="How can we help you?" required></textarea>
+            </div>
+            <button type="submit" class="btn-primary btn-full">Send Message</button>
+          </form>
+          <div id="contact-success" class="booking-success hidden">
+            <div class="success-animation">✉️</div>
+            <h3>Message Sent!</h3>
+            <p>Thank you for reaching out. We'll get back to you within 2 business hours.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE COST ESTIMATOR -->
+  <section id="estimator" class="page-section estimator-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-eyebrow">Instant Quote</span>
+        <h2 class="section-title">Service Cost <span class="accent">Estimator</span></h2>
+        <p class="section-subtitle">Get a ballpark figure before you book. All estimates include parts and labour. Final price confirmed after inspection.</p>
+      </div>
+      <div class="estimator-layout reveal">
+        <div class="estimator-form-col">
+          <div class="form-group">
+            <label for="est-type">Vehicle Type</label>
+            <select id="est-type" onchange="calcEstimate()">
+              <option value="hatch">Hatchback (Swift, i10, Polo)</option>
+              <option value="sedan">Sedan (City, Verna, Ciaz)</option>
+              <option value="suv">SUV / MUV (Creta, Scorpio, XUV)</option>
+              <option value="luxury">Luxury (BMW, Mercedes, Audi)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="est-service">Service Type</label>
+            <select id="est-service" onchange="calcEstimate()">
+              <option value="oil">Oil Change (Synthetic)</option>
+              <option value="full">Full Service (A-Service)</option>
+              <option value="brakes">Brake Pad Replacement (Front)</option>
+              <option value="ac">AC Service + Gas Refill</option>
+              <option value="tyres">4 Tyre Fitting + Balancing</option>
+              <option value="align">3D Wheel Alignment</option>
+              <option value="battery">Battery Replacement</option>
+              <option value="diag">Full Diagnostics Scan</option>
+              <option value="detail">Car Detailing (Interior + Exterior)</option>
+              <option value="ceramic">Ceramic Coating (7H)</option>
+            </select>
+          </div>
+          <div class="estimator-addons">
+            <p class="addon-label">Add-ons:</p>
+            <label class="addon-check"><input type="checkbox" id="addon-pickup" onchange="calcEstimate()" /> Free Pickup &amp; Drop</label>
+            <label class="addon-check"><input type="checkbox" id="addon-express" onchange="calcEstimate()" /> Express Service (same day)</label>
+            <label class="addon-check"><input type="checkbox" id="addon-wash" onchange="calcEstimate()" /> Complimentary Wash</label>
+          </div>
+        </div>
+        <div class="estimator-result-col">
+          <div class="estimate-card" id="estimate-card">
+            <div class="estimate-header">Estimated Cost</div>
+            <div class="estimate-amount" id="estimate-amount">₹800 – ₹1,200</div>
+            <div class="estimate-breakdown" id="estimate-breakdown">
+              <div class="est-row"><span>Parts &amp; Fluids</span><span id="est-parts">₹600</span></div>
+              <div class="est-row"><span>Labour</span><span id="est-labour">₹300</span></div>
+              <div class="est-row est-total"><span>Estimated Total</span><span id="est-total">₹900</span></div>
+            </div>
+            <div class="estimate-note">⚡ Includes GST. Final price confirmed after inspection — no work starts without your approval.</div>
+            <a href="#booking" class="btn-primary btn-full" style="margin-top:1.5rem">Book This Service</a>
+          </div>
+          <div class="estimate-trust">
+            <div class="trust-item">🛡️ 6-Month Warranty Included</div>
+            <div class="trust-item">💰 Price Match Guarantee</div>
+            <div class="trust-item">📱 WhatsApp Quote in 5 mins</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <div class="footer-logo">Auto<span class="accent">Elite</span></div>
+            <p>Premium automotive care since 2012. Your trusted partner for all car service needs.</p>
+            <div class="footer-social">
+              <a href="https://facebook.com" target="_blank" aria-label="Facebook">📘</a>
+              <a href="https://instagram.com" target="_blank" aria-label="Instagram">📸</a>
+              <a href="https://youtube.com" target="_blank" aria-label="YouTube">🎥</a>
+              <a href="https://wa.me/919510516503" target="_blank" aria-label="WhatsApp">💬</a>
+            </div>
+          </div>
+          <div class="footer-links-col">
+            <h4>Services</h4>
+            <a href="#services">Engine Repair</a>
+            <a href="#services">Oil Change</a>
+            <a href="#services">AC Service</a>
+            <a href="#services">Brake Service</a>
+            <a href="#services">Tyre Service</a>
+            <a href="#services">Car Detailing</a>
+          </div>
+          <div class="footer-links-col">
+            <h4>Quick Links</h4>
+            <a href="#booking">Book Appointment</a>
+            <a href="#tracking">Track Repair</a>
+            <a href="#diagnostics">Free Diagnosis</a>
+            <a href="#estimator">Cost Estimator</a>
+            <a href="#shop">Parts Shop</a>
+            <a href="#blog">Car Tips</a>
+            <a href="#about">About Us</a>
+            <a href="#emergency">Emergency Service</a>
+          </div>
+          <div class="footer-links-col">
+            <h4>Contact</h4>
+            <a href="tel:+919510516503">+91 95105 16503</a>
+            <a href="mailto:hello@autoelitegarage.com">hello@autoelitegarage.com</a>
+            <p style="color:#aaa; font-size:0.85rem; margin-top:0.5rem">Plot No. 15, Industrial Area Phase 2, City – 400001</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© 2024 AutoElite Garage. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="admin.html" style="color:var(--orange)">Owner Login</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- FLOATING CTA & SCROLL TO TOP -->
+  <div class="floating-actions">
+    <a href="https://wa.me/919510516503" class="float-btn whatsapp" target="_blank" title="WhatsApp Us">💬</a>
+    <a href="tel:+919510516503" class="float-btn call" title="Call Us">📞</a>
+    <button class="float-btn top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

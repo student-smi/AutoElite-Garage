@@ -1,0 +1,143 @@
+/* ====================================
+   AUTOELITE GARAGE — ANIMATIONS CSS
+   ==================================== */
+
+/* REVEAL ANIMATIONS */
+.reveal, .reveal-left, .reveal-right {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+.reveal-left { transform: translateX(-50px); }
+.reveal-right { transform: translateX(50px); }
+
+.reveal.in-view, .reveal-left.in-view, .reveal-right.in-view {
+  opacity: 1; transform: translate(0,0);
+}
+
+/* STAGGERED CHILDREN */
+.why-card:nth-child(1), .service-card:nth-child(1), .team-card:nth-child(1), .blog-card:nth-child(1) { transition-delay: 0.05s; }
+.why-card:nth-child(2), .service-card:nth-child(2), .team-card:nth-child(2), .blog-card:nth-child(2) { transition-delay: 0.12s; }
+.why-card:nth-child(3), .service-card:nth-child(3), .team-card:nth-child(3), .blog-card:nth-child(3) { transition-delay: 0.19s; }
+.why-card:nth-child(4), .service-card:nth-child(4), .team-card:nth-child(4), .blog-card:nth-child(4) { transition-delay: 0.26s; }
+.why-card:nth-child(5), .service-card:nth-child(5) { transition-delay: 0.33s; }
+.why-card:nth-child(6), .service-card:nth-child(6) { transition-delay: 0.40s; }
+
+/* HERO STAGGER */
+.hero-content .hero-badge { transition-delay: 0.2s; }
+.hero-content .hero-title { transition-delay: 0.35s; }
+.hero-content .hero-subtitle { transition-delay: 0.5s; }
+.hero-content .hero-actions { transition-delay: 0.65s; }
+.hero-content .hero-stats { transition-delay: 0.8s; }
+
+/* HOVER GLOW ON CARDS */
+@keyframes cardGlow {
+  0% { box-shadow: 0 0 0 rgba(255,107,0,0); }
+  50% { box-shadow: 0 0 30px rgba(255,107,0,0.15); }
+  100% { box-shadow: 0 0 0 rgba(255,107,0,0); }
+}
+
+/* ORANGE LINE UNDERLINE ON HOVER */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: ''; position: absolute; bottom: -2px; left: 50%; right: 50%;
+  height: 2px; background: var(--orange); border-radius: 1px;
+  transition: all 0.3s ease;
+}
+.nav-link:hover::after, .nav-link.active::after { left: 10%; right: 10%; }
+
+/* NUMBER COUNTER ANIMATION */
+@keyframes countUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+.stat-number { animation: countUp 0.6s ease forwards; }
+
+/* GRADIENT SHIMMER EFFECT */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.gradient-text {
+  background-size: 200% auto;
+  animation: shimmer 4s linear infinite;
+}
+
+/* FLOATING ANIMATION FOR DECORATION */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+/* GLOW PULSE ANIMATION */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,107,0,0.2); }
+  50% { box-shadow: 0 0 40px rgba(255,107,0,0.5); }
+}
+
+/* TYPEWRITER CURSOR */
+@keyframes cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* TRACK STEP LINE DRAW */
+@keyframes lineGrow { from { scaleY: 0; } to { scaleY: 1; } }
+
+/* PAGE TRANSITION */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-section { animation: pageIn 0.5s ease forwards; }
+
+/* SMOOTH BADGE ENTRANCE */
+@keyframes badgeIn {
+  from { opacity: 0; transform: scale(0.8) translateY(-10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+.hero-badge, .emergency-badge { animation: badgeIn 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.5s both; }
+
+/* SUCCESS ANIMATION */
+@keyframes successBounce {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.success-animation { display: inline-block; animation: successBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+/* LOADING SPINNER */
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn-loader {
+  width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.btn-loader.hidden { display: none; }
+
+/* ISSUE CARD POP */
+.issue-card { animation: none; }
+.issue-card:active { transform: scale(0.97); }
+
+/* RATING BAR FILL ANIMATION */
+@keyframes fillBar { from { width: 0; } }
+.rating-bar-fill { animation: fillBar 1.2s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+/* GALLERY HOVER ZOOM */
+.gallery-item { transform-origin: center; }
+
+/* TESTIMONIAL SLIDE SMOOTHNESS */
+.testimonials-track { will-change: transform; }
+
+/* MOBILE MENU LINK STAGGER */
+.mobile-link:nth-child(1) { animation-delay: 0.05s; }
+.mobile-link:nth-child(2) { animation-delay: 0.1s; }
+.mobile-link:nth-child(3) { animation-delay: 0.15s; }
+.mobile-link:nth-child(4) { animation-delay: 0.2s; }
+.mobile-link:nth-child(5) { animation-delay: 0.25s; }
+
+/* PARTICLE DOT TWINKLE */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.5); }
+}
+
+/* SCROLL PROGRESS BAR */
+#scroll-progress {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: var(--gradient); z-index: 9999;
+  width: 0%; transition: width 0.05s linear;
+}
